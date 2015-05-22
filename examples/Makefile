@@ -47,7 +47,7 @@ endif
 
 default: all
 
-all: printVersion doubleBuffer ringBuffer ringBufferHC lineCompress
+all: printVersion doubleBuffer ringBuffer ringBufferHC lineCompress lz4f_decompressor
 
 printVersion: $(LZ4DIR)/lz4.c printVersion.c
 	$(CC)      $(FLAGS) $^ -o $@$(EXT)
@@ -62,6 +62,9 @@ ringBufferHC: $(LZ4DIR)/lz4.c $(LZ4DIR)/lz4hc.c HCStreaming_ringBuffer.c
 	$(CC)      $(FLAGS) $^ -o $@$(EXT)
 
 lineCompress: $(LZ4DIR)/lz4.c blockStreaming_lineByLine.c
+	$(CC)      $(FLAGS) $^ -o $@$(EXT)
+
+lz4f_decompressor: $(LZ4DIR)/lz4.c $(LZ4DIR)/lz4hc.c $(LZ4DIR)/xxhash.c $(LZ4DIR)/lz4frame.c lz4f_decompressor.c
 	$(CC)      $(FLAGS) $^ -o $@$(EXT)
 
 test : all
