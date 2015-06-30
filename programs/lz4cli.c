@@ -49,6 +49,12 @@
 #  pragma warning(disable : 4127)      /* disable: C4127: conditional expression is constant */
 #endif
 
+#ifdef __MINGW32__
+#  ifdef __STRICT_ANSI__
+#    undef __STRICT_ANSI__       /* for fileno() within <stdio.h> on MinGW */
+#  endif
+#endif
+
 #define _POSIX_SOURCE 1        /* for fileno() within <stdio.h> on unix */
 
 
@@ -72,9 +78,9 @@
 #    define _isatty isatty
 #    define _fileno fileno
 #  endif
-#  ifdef __MINGW32__
-   int _fileno(FILE *stream);   /* MINGW somehow forgets to include this prototype into <stdio.h> */
-#  endif
+//#  ifdef __MINGW32__
+// int _fileno(FILE *stream);   /* MINGW somehow forgets to include this prototype into <stdio.h> */
+//#  endif
 #  define IS_CONSOLE(stdStream) _isatty(_fileno(stdStream))
 #else
 #  include <unistd.h>   /* isatty */
