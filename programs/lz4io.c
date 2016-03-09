@@ -39,6 +39,12 @@
 #  pragma warning(disable : 4127)      /* disable: C4127: conditional expression is constant */
 #endif
 
+#ifdef __MINGW32__
+#  ifdef __STRICT_ANSI__
+#    undef __STRICT_ANSI__       /* for fileno() within <stdio.h> on MinGW */
+#  endif
+#endif
+
 #define _LARGE_FILES           /* Large file support on 32-bits AIX */
 #define _FILE_OFFSET_BITS 64   /* Large file support on 32-bits unix */
 
@@ -67,6 +73,9 @@
 #  if !defined(__DJGPP__)
 #    define SET_BINARY_MODE(file) { int unused=_setmode(_fileno(file), _O_BINARY); (void)unused; }
 #    include <Windows.h> /* DeviceIoControl, HANDLE, FSCTL_SET_SPARSE */
+#    if defined(__MINGW32__)
+#      include <winioctl.h> /* MinGW : FSCTL_SET_SPARSE */
+#    endif
 #    define SET_SPARSE_FILE_MODE(file) { DWORD dw; DeviceIoControl((HANDLE) _get_osfhandle(_fileno(file)), FSCTL_SET_SPARSE, 0, 0, 0, 0, &dw, 0); }
 #    if defined(_MSC_VER) && (_MSC_VER >= 1400)  /* Avoid MSVC fseek()'s 2GiB barrier */
 #      define fseek _fseeki64
