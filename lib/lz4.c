@@ -1677,18 +1677,15 @@ int LZ4_compress_forceExtDict (LZ4_stream_t* LZ4_dict, const char* source, char*
 int LZ4_saveDict (LZ4_stream_t* LZ4_dict, char* safeBuffer, int dictSize)
 {
     LZ4_stream_t_internal* const dict = &LZ4_dict->internal_donotuse;
+    const BYTE* const previousDictEnd = dict->dictionary + dict->dictSize;
 
-    DEBUGLOG(5, "LZ4_saveDict : dictSize=%i, safeBuffer=%p", dictSize, safeBuffer);
+    DEBUGLOG(5, "LZ4_saveDict : dictSize=%i, safeBuffer=%p, prevDictEnd=%p", dictSize, safeBuffer, previousDictEnd);
 
     if ((U32)dictSize > 64 KB) { dictSize = 64 KB; } /* useless to define a dictionary > 64 KB */
     if ((U32)dictSize > dict->dictSize) { dictSize = (int)dict->dictSize; }
 
     if (safeBuffer == NULL) assert(dictSize == 0);
-    if (dictSize > 0) {
-        const BYTE* const previousDictEnd = dict->dictionary + dict->dictSize;
-        assert(dict->dictionary);
-        memmove(safeBuffer, previousDictEnd - dictSize, dictSize);
-    }
+    if (dictSize > 0) memmove(safeBuffer, previousDictEnd - dictSize, dictSize);
 
     dict->dictionary = (const BYTE*)safeBuffer;
     dict->dictSize = (U32)dictSize;
@@ -2298,13 +2295,8 @@ int LZ4_freeStreamDecode (LZ4_streamDecode_t* LZ4_stream)
 int LZ4_setStreamDecode (LZ4_streamDecode_t* LZ4_streamDecode, const char* dictionary, int dictSize)
 {
     LZ4_streamDecode_t_internal* lz4sd = &LZ4_streamDecode->internal_donotuse;
-    lz4sd->prefixSize = (size_t)dictSize;
-    if (dictSize) {
-        assert(dictionary != NULL);
-        lz4sd->prefixEnd = (const BYTE*) dictionary + dictSize;
-    } else {
-        lz4sd->prefixEnd = (const BYTE*) dictionary;
-    }
+    lz4sd->prefixSize = (size_t) dictSize;
+    lz4sd->prefixEnd = (const BYTE*) dictionary + dictSize;
     lz4sd->externalDict = NULL;
     lz4sd->extDictSize  = 0;
     return 1;
