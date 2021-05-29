@@ -10,7 +10,8 @@ jobs:
       # For now, we ignore the exit code of `make usan`.
       # See "Known issues" in README.md
       run: |
-        make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || echo Ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+        ! make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
+        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
 
 
   lz4-ubsan-32:
@@ -28,4 +29,5 @@ jobs:
       # For now, we ignore the exit code of `make usan`.
       # See "Known issues" in README.md
       run: |
-        CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || echo Ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+        ! CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
+        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
