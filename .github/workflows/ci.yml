@@ -54,6 +54,7 @@ jobs:
   # - "ubuntu-latest" (Ubuntu 20.04) has the following software
   #   https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
   env-info:
+    name: Linux Virtual Env Info (${{ matrix.os }})
     strategy:
       matrix:
         include: [
@@ -63,7 +64,6 @@ jobs:
           { os: ubuntu-16.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
         ]
 
-    name: Linux Virtual Env Info (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
@@ -98,12 +98,8 @@ jobs:
 
   # Test various C compilers
   #
-  # Invoke the following commands for each C compiler
-  #   make all c_standards
-  #   make -C programs
-  #   make -C tests
-  #
-  ubuntu-basic-compatibility:
+  c-compilers:
+    name: $(CC)=${{ matrix.name }}, ${{ matrix.os }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
@@ -161,7 +157,6 @@ jobs:
           { name: 'clang 3.5',  pkg: 'clang-3.5',         cc: clang-3.5, cxx: clang++-3.5,  os: ubuntu-16.04,  },
         ]
 
-    name: ${{ matrix.name }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:                        # Set environment variables
       # We globally set CC and CXX to improve compatibility with .travis.yml
@@ -172,7 +167,7 @@ jobs:
     - name: apt-get install
       run: sudo apt-get install gcc-multilib ${{ matrix.pkg }}
 
-    - name: Compiler information
+    - name: Environment info
       run: |
         echo && which $CC
         echo && $CC --version
@@ -180,29 +175,90 @@ jobs:
         echo && $CXX --version
 
     - name: make
-      run: make
+      run: make V=1
 
 ####    - name: make all
-####      run: make clean all
+####      run: make V=1 clean all
 ####
 ####    - name: make c_standards
-####      run: make clean c_standards
+####      run: make V=1 clean c_standards
 ####
 ####    - name: make -C programs default
-####      run: make -C programs clean default
+####      run: make V=1 -C programs clean default
 ####
 ####    - name: make -C programs default -D_FORTIFY_SOURCE=2
-####      run: CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make -C programs clean default
+####      run: CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make V=1 -C programs clean default
 ####
 ####    - name: make -C tests test-lz4
-####      run: MOREFLAGS='-Werror' make -C tests clean test-lz4
+####      run: MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
 ####
 ####    - name: make -C tests test-lz4c32
-####      run: MOREFLAGS='-Werror' make -C tests clean test-lz4c32
+####      run: MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
 ####
 ####    - name: make c-to-c++
-####      run: make clean ctocpptest
+####      run: make V=1 clean ctocpptest
 
-    - name: make clangtest
+    - name: make clangtest (clang only)
       if: ${{ startsWith( matrix.cc , 'clang' ) }}
-      run: make clean clangtest
+      run: make V=1 clean clangtest
+
+
+  # Test other platforms: { ARM, ARM64, PPC, PPC64LE, S390X }
+  # All tests are using QEMU and gcc cross compiler.
+  #
+  qemu-platforms:
+    name: QEMU ${{ matrix.name }}
+    strategy:
+      fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
+      matrix:
+        include: [
+          # You can access the following values via ${{ matrix.??? }}
+          #   name : Label name.
+          #   pkg  : apt-get package name.
+          #   xcc  : gcc cross C compiler executable.
+          #   xemu : QEMU static emulator executable.
+          #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+  
+          { name: ARM,      pkg: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
+          { name: ARM64,    pkg: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
+          { name: PPC,      pkg: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
+          { name: PPC64LE,  pkg: 'qemu-system-ppc   gcc-powerpc64le-linux-gnu', xcc: powerpc64le-linux-gnu-gcc, xemu: qemu-ppc64le-static, os: ubuntu-latest, },
+          { name: S390X,    pkg: 'qemu-system-s390x gcc-s390x-linux-gnu',       xcc: s390x-linux-gnu-gcc,       xemu: qemu-s390x-static,   os: ubuntu-latest, },
+        ]
+
+    runs-on: ${{ matrix.os }}
+    env:                        # Set environment variables
+      XCC: ${{ matrix.xcc }}
+      XEMU: ${{ matrix.xemu }}
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: apt-get install
+      run: sudo apt-get install gcc-multilib ${{ matrix.pkg }}
+
+    - name: Environment info
+      run: |
+        echo && which $XCC
+        echo && $XCC --version
+        echo && $XCC -v  # Show built-in specs
+        echo && which $XEMU
+        echo && $XEMU --version
+
+####    - name: ARM
+####      if: ${{ matrix.name == 'ARM' }}
+####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+####
+####    - name: ARM64
+####      if: ${{ matrix.name == 'ARM64' }}
+####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+####
+####    - name: PPC
+####      if: ${{ matrix.name == 'PPC' }}
+####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+####
+####    - name: PPC64LE
+####      if: ${{ matrix.name == 'PPC64LE' }}
+####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
+####
+####    - name: S390X
+####      if: ${{ matrix.name == 'S390X' }}
+####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
