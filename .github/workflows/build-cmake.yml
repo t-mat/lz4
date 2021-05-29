@@ -1,7 +1,7 @@
 # Test for cmake build system
 name: CMake
 on: [push, pull_request]
-####jobs:
+jobs:
 ####  lz4-build-cmake:
 ####    name: cmake, build-cmake.yml
 ####    runs-on: ubuntu-latest
