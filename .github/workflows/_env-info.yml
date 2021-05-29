@@ -45,6 +45,9 @@ jobs:
     - name: libx32gcc packages for x32 (apt-cache)
       run: apt-cache search libx32gcc | grep "^libx32gcc-" | sort
 
+    - name: gcc multilib packages (apt-cache)
+      run: apt-cache search multilib | grep "gcc-" | sort
+
     - name: clang packages (apt-cache)
       run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
 

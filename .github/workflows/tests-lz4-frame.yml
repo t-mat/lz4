@@ -1,18 +1,18 @@
-####name: LZ4 Frame
-####on: [push, pull_request]
-####jobs:
-####  # travis-ci: (Precise) frame and fuzzer test
-####  lz4-frame-and-fuzzer:
-####    name: LZ4 frame test, tests-lz4-frame.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: apt-get install
-####      run: |
-####        sudo apt-get install gcc-multilib
-####
-####    - name: frame + fuzzer test
-####      run: |
-####        make V=1 -C tests test-frametest
-####        make V=1 -C tests test-frametest32
+name: LZ4 Frame
+on: [push, pull_request]
+jobs:
+  # travis-ci: (Precise) frame and fuzzer test
+  lz4-frame-and-fuzzer:
+    name: LZ4 frame test, tests-lz4-frame.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+
+    - name: frame + fuzzer test
+      run: |
+        make V=1 -C tests test-frametest
+        make V=1 -C tests test-frametest32

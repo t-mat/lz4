@@ -1,24 +1,24 @@
-##### macOS
-####name: macOS
-####on: [push, pull_request]
-####jobs:
-####  lz4-macos-latest:
-####    name: macOS general test, macos.yml
-####    runs-on: macos-latest
-####    steps:
-####    - uses: actions/checkout@v2
-####
-####    - name: Environment info
-####      run: |
-####        echo && which cc && cc --version
-####        echo && which make && make -v
-####        echo && sysctl -a | grep machdep.cpu   # cpuinfo
-####
-####    - name: make default
-####      run: |
-####        CFLAGS="-Werror" make V=1 clean default
-####
-####    - name: test
-####      run: |
-####        # test scenario where `stdout` is not the console
-####        make V=1 clean test MOREFLAGS='-Werror -Wconversion -Wno-sign-conversion' | tee
+# macOS
+name: macOS
+on: [push, pull_request]
+jobs:
+  lz4-macos-latest:
+    name: macOS general test, macos.yml
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Environment info
+      run: |
+        echo && which cc && cc --version
+        echo && which make && make -v
+        echo && sysctl -a | grep machdep.cpu   # cpuinfo
+
+    - name: make default
+      run: |
+        CFLAGS="-Werror" make V=1 clean default
+
+    - name: test
+      run: |
+        # test scenario where `stdout` is not the console
+        make V=1 clean test MOREFLAGS='-Werror -Wconversion -Wno-sign-conversion' | tee

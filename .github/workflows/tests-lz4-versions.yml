@@ -1,16 +1,16 @@
-####name: LZ4 versions compatibility
-####on: [push, pull_request]
-####jobs:
-####  lz4-versions:
-####    name: LZ4 versions test, tests-lz4-versions.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: apt-get install
-####      run: |
-####        sudo apt-get install gcc-multilib
-####
-####    - name: make -C tests versionsTest
-####      run: |
-####        make V=1 -C tests versionsTest
+name: LZ4 versions compatibility
+on: [push, pull_request]
+jobs:
+  lz4-versions:
+    name: LZ4 versions test, tests-lz4-versions.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+
+    - name: make -C tests versionsTest
+      run: |
+        make V=1 -C tests versionsTest

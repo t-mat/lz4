@@ -1,67 +1,67 @@
-##### Test the following platforms
-#####   - ARM, ARM64, PPC, PPC64LE, S390X.
-#####
-##### All tests use QEMU (static) and gcc cross compiler.
-####
-####name: QEMU
-####on: [push, pull_request]
-####jobs:
-####  lz4-qemu-platforms:
-####    name: QEMU ${{ matrix.type }}, qemu.yml
-####    strategy:
-####      fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix instance failed.
-####      matrix:
-####        include: [
-####          # You can access the following values via ${{ matrix.??? }}
-####          #   name : Label name.
-####          #   type : Architecture type for `if:` statement.
-####          #   pkgs : apt-get package names.  You can include multiple packages which are delimited by space.
-####          #   xcc  : gcc cross C compiler executable.
-####          #   xemu : QEMU static emulator executable.
-####          #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
-####  
-####          { type: ARM,      pkgs: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
-####          { type: ARM64,    pkgs: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
-####          { type: PPC,      pkgs: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
-####          { type: PPC64LE,  pkgs: 'qemu-system-ppc   gcc-powerpc64le-linux-gnu', xcc: powerpc64le-linux-gnu-gcc, xemu: qemu-ppc64le-static, os: ubuntu-latest, },
-####          { type: S390X,    pkgs: 'qemu-system-s390x gcc-s390x-linux-gnu',       xcc: s390x-linux-gnu-gcc,       xemu: qemu-s390x-static,   os: ubuntu-latest, },
-####        ]
-####
-####    runs-on: ${{ matrix.os }}
-####    env:                        # Set environment variables
-####      XCC: ${{ matrix.xcc }}
-####      XEMU: ${{ matrix.xemu }}
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: apt-get install
-####      run: |
-####        sudo apt-get install gcc-multilib
-####        sudo apt-get install qemu-utils qemu-user-static
-####        sudo apt-get install ${{ matrix.pkgs }}
-####
-####    - name: Environment info
-####      run: |
-####        echo && which $XCC && $XCC --version
-####        echo && $XCC -v                       # Show built-in specs
-####        echo && which $XEMU && $XEMU --version
-####
-####    - name: ARM64
-####      if: ${{ matrix.type == 'ARM64' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
-####
-####    - name: ARM
-####      if: ${{ matrix.type == 'ARM' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
-####
-####    - name: PPC
-####      if: ${{ matrix.type == 'PPC' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
-####
-####    - name: PPC64LE
-####      if: ${{ matrix.type == 'PPC64LE' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
-####
-####    - name: S390X
-####      if: ${{ matrix.type == 'S390X' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+# Test the following platforms
+#   - ARM, ARM64, PPC, PPC64LE, S390X.
+#
+# All tests use QEMU (static) and gcc cross compiler.
+
+name: QEMU
+on: [push, pull_request]
+jobs:
+  lz4-qemu-platforms:
+    name: QEMU ${{ matrix.type }}, qemu.yml
+    strategy:
+      fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix instance failed.
+      matrix:
+        include: [
+          # You can access the following values via ${{ matrix.??? }}
+          #   name : Label name.
+          #   type : Architecture type for `if:` statement.
+          #   pkgs : apt-get package names.  You can include multiple packages which are delimited by space.
+          #   xcc  : gcc cross C compiler executable.
+          #   xemu : QEMU static emulator executable.
+          #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+  
+          { type: ARM,      pkgs: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
+          { type: ARM64,    pkgs: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
+          { type: PPC,      pkgs: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
+          { type: PPC64LE,  pkgs: 'qemu-system-ppc   gcc-powerpc64le-linux-gnu', xcc: powerpc64le-linux-gnu-gcc, xemu: qemu-ppc64le-static, os: ubuntu-latest, },
+          { type: S390X,    pkgs: 'qemu-system-s390x gcc-s390x-linux-gnu',       xcc: s390x-linux-gnu-gcc,       xemu: qemu-s390x-static,   os: ubuntu-latest, },
+        ]
+
+    runs-on: ${{ matrix.os }}
+    env:                        # Set environment variables
+      XCC: ${{ matrix.xcc }}
+      XEMU: ${{ matrix.xemu }}
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+        sudo apt-get install qemu-utils qemu-user-static
+        sudo apt-get install ${{ matrix.pkgs }}
+
+    - name: Environment info
+      run: |
+        echo && which $XCC && $XCC --version
+        echo && $XCC -v                       # Show built-in specs
+        echo && which $XEMU && $XEMU --version
+
+    - name: ARM64
+      if: ${{ matrix.type == 'ARM64' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+
+    - name: ARM
+      if: ${{ matrix.type == 'ARM' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+
+    - name: PPC
+      if: ${{ matrix.type == 'PPC' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+
+    - name: PPC64LE
+      if: ${{ matrix.type == 'PPC64LE' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
+
+    - name: S390X
+      if: ${{ matrix.type == 'S390X' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
