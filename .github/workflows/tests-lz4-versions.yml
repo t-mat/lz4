@@ -1,4 +1,4 @@
-name: versions test
+name: LZ4 versions compatibility
 on: [push, pull_request]
 jobs:
   lz4-versions:

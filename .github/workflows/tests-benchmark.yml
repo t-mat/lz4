@@ -1,4 +1,4 @@
-name: misc
+name: Benchmark
 on: [push, pull_request]
 jobs:
   lz4-benchmark:

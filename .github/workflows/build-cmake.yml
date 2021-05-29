@@ -1,5 +1,5 @@
 # Test for cmake build system
-name: cmake
+name: CMake
 on: [push, pull_request]
 jobs:
   lz4-build-cmake:

@@ -46,12 +46,12 @@ jobs:
         echo && $XCC -v                       # Show built-in specs
         echo && which $XEMU && $XEMU --version
 
+    - name: ARM64
+      if: ${{ matrix.type == 'ARM64' }}
+      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+
 ####    - name: ARM
 ####      if: ${{ matrix.type == 'ARM' }}
-####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
-####
-####    - name: ARM64
-####      if: ${{ matrix.type == 'ARM64' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 ####
 ####    - name: PPC

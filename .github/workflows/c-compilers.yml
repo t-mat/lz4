@@ -1,5 +1,5 @@
 # Name of the workflow is also displayed as a SVG badge
-name: lz4 CI
+name: C compilers
 
 on: [push, pull_request]
 
@@ -89,41 +89,41 @@ jobs:
       run: |
         make V=1
 
-####    - name: make all
-####      run: |
-####        make V=1 clean all
-####
-####    - name: make c_standards
-####      run: |
-####        make V=1 clean c_standards
-####
-####    - name: make c-to-c++
-####      run: |
-####        make V=1 clean ctocpptest
-####
-####    - name: make cxxtest
-####      run: |
-####        make V=1 clean cxxtest
-####
-####    - name: make -C programs default
-####      run: |
-####        make V=1 -C programs clean default
-####
-####    - name: make -C programs default -D_FORTIFY_SOURCE=2
-####      run: |
-####        CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make V=1 -C programs clean default
-####
-####    - name: make -C tests test-lz4
-####      run: |
-####        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
-####
-####    - name: make -C tests test-lz4c32
-####      run: |
-####        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
-####
-####    - name: make -C tests test MOREFLAGS='-mx32'
-####      run: |
-####        MOREFLAGS='-mx32' make V=1 -C tests clean test
+    - name: make all
+      run: |
+        make V=1 clean all
+
+    - name: make c_standards
+      run: |
+        make V=1 clean c_standards
+
+    - name: make c-to-c++
+      run: |
+        make V=1 clean ctocpptest
+
+    - name: make cxxtest
+      run: |
+        make V=1 clean cxxtest
+
+    - name: make -C programs default
+      run: |
+        make V=1 -C programs clean default
+
+    - name: make -C programs default -D_FORTIFY_SOURCE=2
+      run: |
+        CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make V=1 -C programs clean default
+
+    - name: make -C tests test-lz4
+      run: |
+        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
+
+    - name: make -C tests test-lz4c32
+      run: |
+        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
+
+    - name: make -C tests test MOREFLAGS='-mx32'
+      run: |
+        MOREFLAGS='-mx32' make V=1 -C tests clean test
 
     - name: make clangtest (clang only)
       if: ${{ startsWith( matrix.cc , 'clang' ) }}

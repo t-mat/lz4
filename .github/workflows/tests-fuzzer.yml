@@ -1,8 +1,8 @@
-name: Frame and fuzzer test
+name: Fuzzer
 on: [push, pull_request]
 jobs:
   # travis-ci: (Precise) frame and fuzzer test
-  lz4-frame-and-fuzzer:
+  lz4-fuzzer:
     name: Linux x64 frame and fuzzer test
     runs-on: ubuntu-latest
     steps:
@@ -18,5 +18,5 @@ jobs:
 
     - name: frame + fuzzer test
       run: |
-        make V=1 -C tests test-frametest test-fuzzer
-        make V=1 -C tests test-frametest32 test-fuzzer32
+        make V=1 -C tests test-fuzzer
+        make V=1 -C tests test-fuzzer32

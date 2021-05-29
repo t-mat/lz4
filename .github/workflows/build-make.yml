@@ -13,12 +13,12 @@ jobs:
         make V=1
 
 
-  lz4-install:
-    name: Install test
+  lz4-build-make-travis-install:
+    name: Linux x64 make travis-install
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
 
-    - name: install
+    - name: travis-install
       run: |
         make V=1 clean travis-install

@@ -1,5 +1,5 @@
 # Test for meson build system
-name: meson
+name: Meson
 on: [push, pull_request]
 jobs:
   lz4-build-meson:

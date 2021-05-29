@@ -1,16 +1,20 @@
-## Maintenance Schedule
+This directory contains script files for [GitHub Actions](https://github.com/features/actions) which provides CI.
 
-This CI script will remove ubuntu-16.04.  It also removes test for the following compilers:
 
-- gcc : 4.4, 4.6, 4.7
+# Maintenance Schedule
+
+`ubuntu-16.04` environment will be removed at September, 2021.  It also removes test for the following compilers:
+
+- gcc: 4.4, 4.6, 4.7
 - clang: 3.5, 3.6, 3.7, 3.8
 
-See also official announce from GitHub : ["Ubuntu 16.04 LTS will be removed on September 20, 2021"](https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/).
+See also official announcement from GitHub : 
+["Ubuntu 16.04 LTS will be removed on September 20, 2021"](https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/).
 
 
-## Known issues
+# Known issues
 
-### ubsan.yml
+## ubsan.yml
 
 For now, this CI script ignores the exit code of `make usan`.
 Because there're several issues which may take relatively long time to resolve.
@@ -20,15 +24,15 @@ We'll fully enable it when we ensure `make usan` is ready for all commits and PR
 See https://github.com/lz4/lz4/pull/983 for details.
 
 
-### cppcheck.yml
+## cppcheck.yml
 
-This test script ignores the exit code of `cppcheck`.
+This test script ignores the exit code of `make cppcheck`.
 
 Because this project doesn't 100% follow their recommendation.
 Also sometimes it reports false positives.
 
 
-## Notes
+# Notes
 
 - You can investigate various information at the right pane of GitHub
   Actions report page.
@@ -47,7 +51,7 @@ Also sometimes it reports false positives.
   And prevents to overlook basic mistakes.
 
 
-## Difference with .travis.yml
+# Difference with `.travis.yml`
 
 The following tests are not included yet.
 
