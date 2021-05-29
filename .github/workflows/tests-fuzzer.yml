@@ -1,21 +1,24 @@
-name: Fuzzer
-on: [push, pull_request]
-jobs:
-  lz4-fuzzer:
-    name: Fuzzer test, tests-fuzzer.yml
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-
-    - name: apt-get install
-      run: |
-        sudo apt-get install gcc-multilib
-
-    - name: setup
-      run: |
-        sudo sysctl -w vm.mmap_min_addr=4096
-
-    - name: frame + fuzzer test
-      run: |
-        make V=1 -C tests test-fuzzer
-        make V=1 -C tests test-fuzzer32
+####name: Fuzzer
+####on: [push, pull_request]
+####jobs:
+####  lz4-fuzzer:
+####    name: Fuzzer test, tests-fuzzer.yml
+####    runs-on: ubuntu-latest
+####    steps:
+####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+####
+####    - name: apt-get install
+####      run: |
+####        sudo apt-get install gcc-multilib
+####
+####    - name: setup
+####      run: |
+####        sudo sysctl -w vm.mmap_min_addr=4096
+####
+####    - name: fuzzer
+####      run: |
+####        make V=1 -C tests test-fuzzer
+####
+####    - name: fuzzer32
+####      run: |
+####        make V=1 -C tests test-fuzzer32

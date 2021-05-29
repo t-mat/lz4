@@ -1,23 +1,23 @@
-name: scan-build
-on: [push, pull_request]
-jobs:
-  lz4-scan-build:
-    name: make staticAnalyze, scan-build.yml
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-    - name: apt-get install
-      run: |
-        sudo apt-get install clang-tools
-
-    - name: Environment info
-      run: |
-        echo && which gcc && gcc --version
-        echo && which clang && clang --version
-        echo && which scan-build               # scan-build doesn't have any --version equivalent option
-        echo && which make && make -v
-        echo && cat /proc/cpuinfo || echo /proc/cpuinfo is not present
-
-    - name: make staticAnalyze
-      run: |
-        make V=1 clean staticAnalyze
+####name: scan-build
+####on: [push, pull_request]
+####jobs:
+####  lz4-scan-build:
+####    name: make staticAnalyze, scan-build.yml
+####    runs-on: ubuntu-latest
+####    steps:
+####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+####    - name: apt-get install
+####      run: |
+####        sudo apt-get install clang-tools
+####
+####    - name: Environment info
+####      run: |
+####        echo && which gcc && gcc --version
+####        echo && which clang && clang --version
+####        echo && which scan-build               # scan-build doesn't have any --version equivalent option
+####        echo && which make && make -v
+####        echo && cat /proc/cpuinfo || echo /proc/cpuinfo is not present
+####
+####    - name: make staticAnalyze
+####      run: |
+####        make V=1 clean staticAnalyze

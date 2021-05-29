@@ -18,7 +18,11 @@ jobs:
       run: |
         CFLAGS="-Werror" make V=1 clean default
 
-    - name: test
+    - name: make test
+      run: |
+        make V=1 clean test MOREFLAGS='-Werror -Wconversion -Wno-sign-conversion'
+
+    - name: make test | tee
       run: |
         # test scenario where `stdout` is not the console
         make V=1 clean test MOREFLAGS='-Werror -Wconversion -Wno-sign-conversion' | tee
