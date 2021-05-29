@@ -182,9 +182,6 @@ jobs:
     - name: make
       run: make
 
-####    - name: make clean
-####      run: make clean
-####
 ####    - name: make all
 ####      run: make clean all
 ####
@@ -205,3 +202,7 @@ jobs:
 ####
 ####    - name: make c-to-c++
 ####      run: make clean ctocpptest
+
+    - name: make clangtest
+      if: ${{ startsWith( matrix.cc , 'clang' ) }}
+      run: make clean clangtest
