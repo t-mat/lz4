@@ -101,7 +101,7 @@ jobs:
 
     - name: make c_standards (C11)
       run: |
-      if: ${{ matrix.stdc11 == 'yes' ) }}
+      if: ${{ matrix.stdc11 == 'yes' }}
         make V=1 clean c_standards_c11
 
     - name: make c-to-c++
