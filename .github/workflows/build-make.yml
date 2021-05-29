@@ -1,24 +1,24 @@
-##### Test for make build system
-####name: make
-####on: [push, pull_request]
-####jobs:
-####  lz4-build-make:
-####    name: make, build-make.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: make
-####      run: |
-####        make V=1
-####
-####
-####  lz4-build-make-travis-install:
-####    name: make travis-install, build-make.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: travis-install
-####      run: |
-####        make V=1 clean travis-install
+# Test for make build system
+name: make
+on: [push, pull_request]
+jobs:
+  lz4-build-make:
+    name: make, build-make.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: make
+      run: |
+        make V=1
+
+
+  lz4-build-make-travis-install:
+    name: make travis-install, build-make.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: travis-install
+      run: |
+        make V=1 clean travis-install

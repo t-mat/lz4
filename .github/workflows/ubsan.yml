@@ -1,33 +1,33 @@
-####name: ubsan
-####on: [push, pull_request]
-####jobs:
-####  lz4-ubsan:
-####    name: Linux x64 ubsan, ubsan.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####    - name: ubsan
-####      # For now, we ignore the exit code of `make usan`.
-####      # See "Known issues" in README.md
-####      run: |
-####        ! make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
-####        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
-####
-####
-####  lz4-ubsan-32:
-####    name: Linux x86 ubsan, ubsan.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: apt-get install
-####      run: |
-####        sudo apt-get install gcc-multilib
-####        sudo apt-get install lib32gcc-11-dev libx32gcc-11-dev
-####
-####    - name: ubsan
-####      # For now, we ignore the exit code of `make usan`.
-####      # See "Known issues" in README.md
-####      run: |
-####        ! CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
-####        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+name: ubsan
+on: [push, pull_request]
+jobs:
+  lz4-ubsan:
+    name: Linux x64 ubsan, ubsan.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: ubsan
+      # For now, we ignore the exit code of `make usan`.
+      # See "Known issues" in README.md
+      run: |
+        ! make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
+        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+
+
+  lz4-ubsan-32:
+    name: Linux x86 ubsan, ubsan.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+        sudo apt-get install lib32gcc-11-dev libx32gcc-11-dev
+
+    - name: ubsan
+      # For now, we ignore the exit code of `make usan`.
+      # See "Known issues" in README.md
+      run: |
+        ! CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
+        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983

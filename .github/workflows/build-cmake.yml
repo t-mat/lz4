@@ -1,34 +1,34 @@
-##### Test for cmake build system
-####name: CMake
-####on: [push, pull_request]
-####jobs:
-####  lz4-build-cmake:
-####    name: cmake, build-cmake.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####
-####    - name: Environment info
-####      run: |
-####        echo && gcc --version
-####        echo && cmake --version
-####        echo && make -v
-####        echo && cat /proc/cpuinfo || echo /proc/cpuinfo is not present
-####
-####    - name: cmake
-####      run: |
-####        cd build/cmake
-####        mkdir build
-####        cd build
-####        cmake ..
-####        CFLAGS=-Werror make VERBOSE=1
-####
-####
-####  lz4-make-cmake:
-####    name: make cmake, build-cmake.yml
-####    runs-on: ubuntu-latest
-####    steps:
-####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-####    - name: make cmake
-####      run: |
-####        make VERBOSE=1 clean cmake
+# Test for cmake build system
+name: CMake
+on: [push, pull_request]
+jobs:
+  lz4-build-cmake:
+    name: cmake, build-cmake.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: Environment info
+      run: |
+        echo && gcc --version
+        echo && cmake --version
+        echo && make -v
+        echo && cat /proc/cpuinfo || echo /proc/cpuinfo is not present
+
+    - name: cmake
+      run: |
+        cd build/cmake
+        mkdir build
+        cd build
+        cmake ..
+        CFLAGS=-Werror make VERBOSE=1
+
+
+  lz4-make-cmake:
+    name: make cmake, build-cmake.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: make cmake
+      run: |
+        make VERBOSE=1 clean cmake
