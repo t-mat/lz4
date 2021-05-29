@@ -52,8 +52,8 @@ jobs:
 ####          { pkgs: 'clang-12',  cc: clang-12,  cxx: clang++-12,  stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-10 lib32gcc-11-dev libx32gcc-11-dev',  pkgremove: '',  cc: clang-10,  cxx: clang++-10,  stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-          { pkgs: 'clang-9  lib32gcc-11-dev  libx32gcc-11-dev',   cc: clang-9,   cxx: clang++-9,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-####          { pkgs: 'clang-8  lib32gcc-8-dev  libx32gcc-8-dev',   cc: clang-8,   cxx: clang++-8,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
+####          { pkgs: 'clang-9  lib32gcc-11-dev  libx32gcc-11-dev',   cc: clang-9,   cxx: clang++-9,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
+          { pkgs: 'clang-8  lib32gcc-8-dev  libx32gcc-8-dev',   cc: clang-8,   cxx: clang++-8,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-7  lib32gcc-7-dev  libx32gcc-7-dev',   cc: clang-7,   cxx: clang++-7,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-6.0  lib32gcc-6-dev libx32gcc-6-dev', cc: clang-6.0, cxx: clang++-6.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-5.0  lib32gcc-5-dev libx32gcc-5-dev', cc: clang-5.0, cxx: clang++-5.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
@@ -97,16 +97,16 @@ jobs:
 ####      run: |
 ####        make V=1 clean all
 ####
-    - name: make c_standards (C90)
-      if: ${{ matrix.stdc90 == 'true' }}
-      run: |
-        make V=1 clean c_standards_c90
-
-    - name: make c_standards (C11)
-      if: ${{ matrix.stdc11 == 'true' }}
-      run: |
-        make V=1 clean c_standards_c11
-
+####    - name: make c_standards (C90)
+####      if: ${{ matrix.stdc90 == 'true' }}
+####      run: |
+####        make V=1 clean c_standards_c90
+####
+####    - name: make c_standards (C11)
+####      if: ${{ matrix.stdc11 == 'true' }}
+####      run: |
+####        make V=1 clean c_standards_c11
+####
 ####    - name: make c-to-c++
 ####      run: |
 ####        make V=1 clean ctocpptest
