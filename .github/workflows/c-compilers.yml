@@ -51,7 +51,7 @@ jobs:
 ####          # clang
 ####          { pkgs: 'clang-12',  cc: clang-12,  cxx: clang++-12,  stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
-          { pkgs: 'clang-10 lib32gcc-10-dev libx32gcc-10-dev',  pkgremove: 'clang-11',  cc: clang-10,  cxx: clang++-10,  stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
+          { pkgs: 'clang-10 lib32gcc-11-dev libx32gcc-11-dev',  pkgremove: 'clang-11',  cc: clang-10,  cxx: clang++-10,  stdc11: 'true',  stdc90: 'true',  x32: true, os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-9  lib32gcc-9-dev  libx32gcc-9-dev',   cc: clang-9,   cxx: clang++-9,   stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-8  lib32gcc-8-dev  libx32gcc-8-dev',   cc: clang-8,   cxx: clang++-8,   stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-7  lib32gcc-7-dev  libx32gcc-7-dev',   cc: clang-7,   cxx: clang++-7,   stdc11: true,  stdc90: true,  x32: true, os: ubuntu-20.04,  },
