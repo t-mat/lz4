@@ -53,16 +53,16 @@ jobs:
 ####          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-10 lib32gcc-11-dev libx32gcc-11-dev',  pkgremove: '',  cc: clang-10,  cxx: clang++-10,  stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
 ####          { pkgs: 'clang-9  lib32gcc-11-dev  libx32gcc-11-dev',   cc: clang-9,   cxx: clang++-9,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-          { pkgs: 'clang-8  lib32gcc-8-dev  libx32gcc-8-dev',   cc: clang-8,   cxx: clang++-8,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-####          { pkgs: 'clang-7  lib32gcc-7-dev  libx32gcc-7-dev',   cc: clang-7,   cxx: clang++-7,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-####          { pkgs: 'clang-6.0  lib32gcc-6-dev libx32gcc-6-dev', cc: clang-6.0, cxx: clang++-6.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
-####          { pkgs: 'clang-5.0  lib32gcc-5-dev libx32gcc-5-dev', cc: clang-5.0, cxx: clang++-5.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
-####          { pkgs: 'clang-4.0', cc: clang-4.0, cxx: clang++-4.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
-####          { pkgs: 'clang-3.9', cc: clang-3.9, cxx: clang++-3.9, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
-####          { pkgs: 'clang-3.8', cc: clang-3.8, cxx: clang++-3.8, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-16.04,  },
-####          { pkgs: 'clang-3.7', cc: clang-3.7, cxx: clang++-3.7, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.7 clashes for x32
-####          { pkgs: 'clang-3.6', cc: clang-3.6, cxx: clang++-3.6, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.6 clashes for x32
-####          { pkgs: 'clang-3.5', cc: clang-3.5, cxx: clang++-3.5, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.5 clashes for x32
+          { pkgs: 'clang-8  lib32gcc-11-dev  libx32gcc-11-dev',   cc: clang-8,   cxx: clang++-8,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
+          { pkgs: 'clang-7  lib32gcc-7-dev  libx32gcc-7-dev',   cc: clang-7,   cxx: clang++-7,   stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
+          { pkgs: 'clang-6.0  lib32gcc-6-dev libx32gcc-6-dev', cc: clang-6.0, cxx: clang++-6.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-20.04,  },
+          { pkgs: 'clang-5.0  lib32gcc-5-dev libx32gcc-5-dev', cc: clang-5.0, cxx: clang++-5.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
+          { pkgs: 'clang-4.0', cc: clang-4.0, cxx: clang++-4.0, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.9', cc: clang-3.9, cxx: clang++-3.9, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.8', cc: clang-3.8, cxx: clang++-3.8, stdc11: 'true',  stdc90: 'true',  x32: 'true', os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.7', cc: clang-3.7, cxx: clang++-3.7, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.7 clashes for x32
+          { pkgs: 'clang-3.6', cc: clang-3.6, cxx: clang++-3.6, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.6 clashes for x32
+          { pkgs: 'clang-3.5', cc: clang-3.5, cxx: clang++-3.5, stdc11: 'true',  stdc90: 'true',  x32: 'false',  os: ubuntu-16.04,  },  # clang-3.5 clashes for x32
         ]
 
     runs-on: ${{ matrix.os }}
