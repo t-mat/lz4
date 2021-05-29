@@ -1,6 +1,6 @@
-##### Test for cmake build system
-####name: CMake
-####on: [push, pull_request]
+# Test for cmake build system
+name: CMake
+on: [push, pull_request]
 ####jobs:
 ####  lz4-build-cmake:
 ####    name: cmake, build-cmake.yml

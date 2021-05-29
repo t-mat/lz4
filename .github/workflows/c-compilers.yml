@@ -27,22 +27,22 @@ jobs:
 
 
           # gcc
-          { pkgs: 'gcc-11 lib32gcc-11-dev',         cc: gcc-11,    cxx: g++-11,      os: ubuntu-20.04,  },
-          { pkgs: 'gcc-10 lib32gcc-10-dev',         cc: gcc-10,    cxx: g++-10,      os: ubuntu-20.04,  },
-          { pkgs: 'gcc-9 lib32gcc-9-dev',           cc: gcc-9,     cxx: g++-9,       os: ubuntu-20.04,  },
-          { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev',     cc: gcc-8,     cxx: g++-8,       os: ubuntu-20.04,  },
-          { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev',     cc: gcc-7,     cxx: g++-7,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',        cc: gcc-11,    cxx: g++-11,      os: ubuntu-20.04,  },
+          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',        cc: gcc-10,    cxx: g++-10,      os: ubuntu-20.04,  },
+          { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',           cc: gcc-9,     cxx: g++-9,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',     cc: gcc-8,     cxx: g++-8,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',     cc: gcc-7,     cxx: g++-7,       os: ubuntu-20.04,  },
 
           # gcc, ubuntu-18.04
-          { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev',     cc: gcc-6,     cxx: g++-6,       os: ubuntu-18.04,  },
-          { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev',     cc: gcc-5,     cxx: g++-5,       os: ubuntu-18.04,  },
-          { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     os: ubuntu-18.04,  },
+          { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',     cc: gcc-6,     cxx: g++-6,       os: ubuntu-18.04,  },
+          { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev libx32gcc-5-dev',     cc: gcc-5,     cxx: g++-5,       os: ubuntu-18.04,  },
+          { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev libx32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     os: ubuntu-18.04,  },
 
           # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev', cc: gcc-4.7,   cxx: g++-4.7,     os: ubuntu-16.04,  },
-          { pkgs: 'gcc-4.6 g++-4.6 lib32gcc-4.6-dev', cc: gcc-4.6,   cxx: g++-4.6,     os: ubuntu-16.04,  },
-          #{pkgs: 'gcc-4.5 g++-4.5 lib32gcc-4.5-dev', cc: gcc-4.5,   cxx: g++-4.5,     os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
-          { pkgs: 'gcc-4.4 g++-4.4 lib32gcc-4.4-dev', cc: gcc-4.4,   cxx: g++-4.4,     os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev libx32gcc-4.7-dev', cc: gcc-4.7,   cxx: g++-4.7,     os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.6 g++-4.6', cc: gcc-4.6,   cxx: g++-4.6,     os: ubuntu-16.04,  },
+          #{pkgs: 'gcc-4.5 g++-4.5', cc: gcc-4.5,   cxx: g++-4.5,     os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
+          { pkgs: 'gcc-4.4 g++-4.4', cc: gcc-4.4,   cxx: g++-4.4,     os: ubuntu-16.04,  },
 
 
           # clang
@@ -117,10 +117,6 @@ jobs:
       run: |
         MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
 
-    - name: make -C tests test-lz4c32
-      run: |
-        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
-
     - name: make -C tests test MOREFLAGS='-mx32'
       run: |
         MOREFLAGS='-mx32' make V=1 -C tests clean test
@@ -129,3 +125,7 @@ jobs:
       if: ${{ startsWith( matrix.cc , 'clang' ) }}
       run: |
         make V=1 clean clangtest
+
+    - name: make -C tests test-lz4c32
+      run: |
+        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32

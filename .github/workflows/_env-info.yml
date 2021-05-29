@@ -39,6 +39,12 @@ jobs:
     - name: gcc packages (apt-cache)
       run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
 
+    - name: lib32gcc packages for i386 (apt-cache)
+      run: apt-cache search lib32gcc | grep "^lib32gcc-" | sort
+
+    - name: libx32gcc packages for x32 (apt-cache)
+      run: apt-cache search libx32gcc | grep "^libx32gcc-" | sort
+
     - name: clang packages (apt-cache)
       run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
 
