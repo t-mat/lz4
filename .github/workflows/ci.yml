@@ -3,7 +3,7 @@
 #   https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/
 #   This CI script will remove ubuntu-16.04.
 #   It also removes test for the following compilers:
-#   - gcc : 4.4, 4.5, 4.6, 4.7
+#   - gcc : 4.4, 4.6, 4.7
 #   - clang: 3.5, 3.6, 3.7, 3.8
 #
 # Known issues:
@@ -53,17 +53,18 @@ jobs:
   #
   # - "ubuntu-latest" (Ubuntu 20.04) has the following software
   #   https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-  basic-env-info:
-    name: Linux Virtual Env Info (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  env-info:
     strategy:
       matrix:
-        os: [
-          ubuntu-latest,
-          ubuntu-20.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-          ubuntu-18.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
-          ubuntu-16.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
+        include: [
+          { os: ubuntu-latest,  }, 
+          { os: ubuntu-20.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+          { os: ubuntu-18.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
+          { os: ubuntu-16.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
         ]
+
+    name: Linux Virtual Env Info (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
 
@@ -102,73 +103,104 @@ jobs:
   #   make -C programs
   #   make -C tests
   #
-  ubuntu-c-compilers:
-    name: ${{ matrix.xcc_name }}, ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  ubuntu-basic-compatibility:
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
-          # xcc_name : label name.  string.
-          # xcc_pkg  : apt-get package name.
-          # xcc      : C compiler executable.
-          # os       : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+          # cc_name : label name.  string.
+          # cc_pkg  : apt-get package name.
+          # cc      : C compiler executable.
+          # os      : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
 
           # Default C compilers
           #  We use 'ubuntu-latest' for default C compilers.
-          { xcc_name: 'cc',         xcc_pkg: '',        xcc: cc,        os: ubuntu-latest, },
-          { xcc_name: 'gcc',        xcc_pkg: '',        xcc: gcc,       os: ubuntu-latest, },
-          { xcc_name: 'clang',      xcc_pkg: '',        xcc: clang,     os: ubuntu-latest, },
+          { cc_name: 'cc',         cc_pkg: '',        cc: cc,        cxx: cxx,          os: ubuntu-latest, },
+          { cc_name: 'gcc',        cc_pkg: '',        cc: gcc,       cxx: g++,          os: ubuntu-latest, },
+          { cc_name: 'clang',      cc_pkg: '',        cc: clang,     cxx: clang++,      os: ubuntu-latest, },
 
 
           # gcc
-          { xcc_name: 'gcc 11',     xcc_pkg: gcc-11,    xcc: gcc-11,    os: ubuntu-20.04,  },
-          { xcc_name: 'gcc 10',     xcc_pkg: gcc-10,    xcc: gcc-10,    os: ubuntu-20.04,  },
-          { xcc_name: 'gcc 9',      xcc_pkg: gcc-9,     xcc: gcc-9,     os: ubuntu-20.04,  },
-          { xcc_name: 'gcc 8',      xcc_pkg: gcc-8,     xcc: gcc-8,     os: ubuntu-20.04,  },
-          { xcc_name: 'gcc 7',      xcc_pkg: gcc-7,     xcc: gcc-7,     os: ubuntu-20.04,  },
+          { cc_name: 'gcc 11',     cc_pkg: gcc-11,    cc: gcc-11,    cxx: g++-11,       os: ubuntu-20.04,  },
+          { cc_name: 'gcc 10',     cc_pkg: gcc-10,    cc: gcc-10,    cxx: g++-10,       os: ubuntu-20.04,  },
+          { cc_name: 'gcc 9',      cc_pkg: gcc-9,     cc: gcc-9,     cxx: g++-9,        os: ubuntu-20.04,  },
+          { cc_name: 'gcc 8',      cc_pkg: gcc-8,     cc: gcc-8,     cxx: g++-8,        os: ubuntu-20.04,  },
+          { cc_name: 'gcc 7',      cc_pkg: gcc-7,     cc: gcc-7,     cxx: g++-7,        os: ubuntu-20.04,  },
 
           # gcc, ubuntu-18.04
-          { xcc_name: 'gcc 6',      xcc_pkg: gcc-6,     xcc: gcc-6,     os: ubuntu-18.04,  },
-          { xcc_name: 'gcc 5',      xcc_pkg: gcc-5,     xcc: gcc-5,     os: ubuntu-18.04,  },
-          { xcc_name: 'gcc 4.8',    xcc_pkg: gcc-4.8,   xcc: gcc-4.8,   os: ubuntu-18.04,  },
+          { cc_name: 'gcc 6',      cc_pkg: gcc-6,     cc: gcc-6,     cxx: g++-6,        os: ubuntu-18.04,  },
+          { cc_name: 'gcc 5',      cc_pkg: gcc-5,     cc: gcc-5,     cxx: g++-5,        os: ubuntu-18.04,  },
+          { cc_name: 'gcc 4.8',    cc_pkg: gcc-4.8,   cc: gcc-4.8,   cxx: g++-4.8,      os: ubuntu-18.04,  },
 
           # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { xcc_name: 'gcc 4.7',    xcc_pkg: gcc-4.7,   xcc: gcc-4.7,   os: ubuntu-16.04,  },
-          { xcc_name: 'gcc 4.6',    xcc_pkg: gcc-4.6,   xcc: gcc-4.6,   os: ubuntu-16.04,  },
-          { xcc_name: 'gcc 4.5',    xcc_pkg: gcc-4.5,   xcc: gcc-4.5,   os: ubuntu-16.04,  },
-          { xcc_name: 'gcc 4.4',    xcc_pkg: gcc-4.4,   xcc: gcc-4.4,   os: ubuntu-16.04,  },
+          { cc_name: 'gcc 4.7',    cc_pkg: gcc-4.7,   cc: gcc-4.7,   cxx: g++-4.7,      os: ubuntu-16.04,  },
+          { cc_name: 'gcc 4.6',    cc_pkg: gcc-4.6,   cc: gcc-4.6,   cxx: g++-4.6,      os: ubuntu-16.04,  },
+          #{cc_name: 'gcc 4.5',    cc_pkg: gcc-4.5,   cc: gcc-4.5,   cxx: g++-4.5,      os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
+          { cc_name: 'gcc 4.4',    cc_pkg: gcc-4.4,   cc: gcc-4.4,   cxx: g++-4.4,      os: ubuntu-16.04,  },
 
 
           # clang
-          { xcc_name: 'clang 12',   xcc_pkg: clang-12,  xcc: clang-12,  os: ubuntu-20.04,  },
-          { xcc_name: 'clang 11',   xcc_pkg: clang-11,  xcc: clang-11,  os: ubuntu-20.04,  },
-          { xcc_name: 'clang 10',   xcc_pkg: clang-10,  xcc: clang-10,  os: ubuntu-20.04,  },
-          { xcc_name: 'clang 9',    xcc_pkg: clang-9,   xcc: clang-9,   os: ubuntu-20.04,  },
-          { xcc_name: 'clang 8',    xcc_pkg: clang-8,   xcc: clang-8,   os: ubuntu-20.04,  },
-          { xcc_name: 'clang 7',    xcc_pkg: clang-7,   xcc: clang-7,   os: ubuntu-20.04,  },
-          { xcc_name: 'clang 6',    xcc_pkg: clang-6.0, xcc: clang-6.0, os: ubuntu-20.04,  },
+          { cc_name: 'clang 12',   cc_pkg: clang-12,  cc: clang-12,  cxx: clang++-12,   os: ubuntu-20.04,  },
+          { cc_name: 'clang 11',   cc_pkg: clang-11,  cc: clang-11,  cxx: clang++-11,   os: ubuntu-20.04,  },
+          { cc_name: 'clang 10',   cc_pkg: clang-10,  cc: clang-10,  cxx: clang++-10,   os: ubuntu-20.04,  },
+          { cc_name: 'clang 9',    cc_pkg: clang-9,   cc: clang-9,   cxx: clang++-9,    os: ubuntu-20.04,  },
+          { cc_name: 'clang 8',    cc_pkg: clang-8,   cc: clang-8,   cxx: clang++-8,    os: ubuntu-20.04,  },
+          { cc_name: 'clang 7',    cc_pkg: clang-7,   cc: clang-7,   cxx: clang++-7,    os: ubuntu-20.04,  },
+          { cc_name: 'clang 6',    cc_pkg: clang-6.0, cc: clang-6.0, cxx: clang++-6.0,  os: ubuntu-20.04,  },
 
           # clang, ubuntu-18.04
-          { xcc_name: 'clang 5',    xcc_pkg: clang-5.0, xcc: clang-5.0, os: ubuntu-18.04,  },
-          { xcc_name: 'clang 4',    xcc_pkg: clang-4.0, xcc: clang-4.0, os: ubuntu-18.04,  },
-          { xcc_name: 'clang 3.9',  xcc_pkg: clang-3.9, xcc: clang-3.9, os: ubuntu-18.04,  },
+          { cc_name: 'clang 5',    cc_pkg: clang-5.0, cc: clang-5.0, cxx: clang++-5.0,  os: ubuntu-18.04,  },
+          { cc_name: 'clang 4',    cc_pkg: clang-4.0, cc: clang-4.0, cxx: clang++-4.0,  os: ubuntu-18.04,  },
+          { cc_name: 'clang 3.9',  cc_pkg: clang-3.9, cc: clang-3.9, cxx: clang++-3.9,  os: ubuntu-18.04,  },
 
           # clang, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { xcc_name: 'clang 3.8',  xcc_pkg: clang-3.8, xcc: clang-3.8, os: ubuntu-16.04,  },
-          { xcc_name: 'clang 3.7',  xcc_pkg: clang-3.7, xcc: clang-3.7, os: ubuntu-16.04,  },
-          { xcc_name: 'clang 3.6',  xcc_pkg: clang-3.6, xcc: clang-3.6, os: ubuntu-16.04,  },
-          { xcc_name: 'clang 3.5',  xcc_pkg: clang-3.5, xcc: clang-3.5, os: ubuntu-16.04,  },
+          { cc_name: 'clang 3.8',  cc_pkg: clang-3.8, cc: clang-3.8, cxx: clang++-3.8,  os: ubuntu-16.04,  },
+          { cc_name: 'clang 3.7',  cc_pkg: clang-3.7, cc: clang-3.7, cxx: clang++-3.7,  os: ubuntu-16.04,  },
+          { cc_name: 'clang 3.6',  cc_pkg: clang-3.6, cc: clang-3.6, cxx: clang++-3.6,  os: ubuntu-16.04,  },
+          { cc_name: 'clang 3.5',  cc_pkg: clang-3.5, cc: clang-3.5, cxx: clang++-3.5,  os: ubuntu-16.04,  },
         ]
+
+    name: ${{ matrix.cc_name }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     env:                        # Set environment variables
-      XCC: ${{ matrix.xcc }}
+      # We globally set CC to improve compatibility with .travis.yml
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
     - name: apt-get install
-      run: |
-        sudo apt-get install gcc-multilib ${{ matrix.xcc_pkg }} 
+      run: sudo apt-get install gcc-multilib ${{ matrix.cc_pkg }}
 
-    - name: Environment info
+    - name: Compiler information
       run: |
-        echo && which $XCC
-        echo && $XCC --version
+        echo && which $CC
+        echo && $CC --version
+        echo && which $CXX
+        echo && $CXX --version
+
+    - name: make
+      run: make
+
+####    - name: make clean
+####      run: make clean
+####
+####    - name: make all
+####      run: make clean all
+####
+####    - name: make c_standards
+####      run: make clean c_standards
+####
+####    - name: make -C programs default
+####      run: make -C programs clean default
+####
+####    - name: make -C programs default -D_FORTIFY_SOURCE=2
+####      run: CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make -C programs clean default
+####
+####    - name: make -C tests test-lz4
+####      run: MOREFLAGS='-Werror' make -C tests clean test-lz4
+####
+####    - name: make -C tests test-lz4c32
+####      run: MOREFLAGS='-Werror' make -C tests clean test-lz4c32
+####
+####    - name: make c-to-c++
+####      run: make clean ctocpptest
