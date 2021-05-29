@@ -1,12 +1,12 @@
 // LZ4 HC streaming API example : ring buffer
-// Based on previous work from Takayuki Matsuoka
+// Based on a previous example by Takayuki Matsuoka
 
 
 /**************************************
  * Compiler Options
  **************************************/
-#ifdef _MSC_VER    /* Visual Studio */
-#  define _CRT_SECURE_NO_WARNINGS // for MSVC
+#if defined(_MSC_VER) && (_MSC_VER <= 1800)  /* Visual Studio <= 2013 */
+#  define _CRT_SECURE_NO_WARNINGS
 #  define snprintf sprintf_s
 #endif
 
@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 enum {
     MESSAGE_MAX_BYTES   = 1024,
@@ -39,7 +40,8 @@ size_t write_int32(FILE* fp, int32_t i) {
 }
 
 size_t write_bin(FILE* fp, const void* array, int arrayBytes) {
-    return fwrite(array, 1, arrayBytes, fp);
+    assert(arrayBytes >= 0);
+    return fwrite(array, 1, (size_t)arrayBytes, fp);
 }
 
 size_t read_int32(FILE* fp, int32_t* i) {
@@ -47,7 +49,8 @@ size_t read_int32(FILE* fp, int32_t* i) {
 }
 
 size_t read_bin(FILE* fp, void* array, int arrayBytes) {
-    return fread(array, 1, arrayBytes, fp);
+    assert(arrayBytes >= 0);
+    return fread(array, 1, (size_t)arrayBytes, fp);
 }
 
 
@@ -59,17 +62,16 @@ void test_compress(FILE* outFp, FILE* inpFp)
     static char inpBuf[RING_BUFFER_BYTES];
     int inpOffset = 0;
 
-    for(;;)
-    {
+    for(;;) {
         // Read random length ([1,MESSAGE_MAX_BYTES]) data to the ring buffer.
         char* const inpPtr = &inpBuf[inpOffset];
         const int randomLength = (rand() % MESSAGE_MAX_BYTES) + 1;
         const int inpBytes = (int) read_bin(inpFp, inpPtr, randomLength);
         if (0 == inpBytes) break;
 
-        {
-            char cmpBuf[LZ4_COMPRESSBOUND(MESSAGE_MAX_BYTES)];
-            const int cmpBytes = LZ4_compressHC_continue(lz4Stream, inpPtr, cmpBuf, inpBytes);
+#define CMPBUFSIZE (LZ4_COMPRESSBOUND(MESSAGE_MAX_BYTES))
+        {   char cmpBuf[CMPBUFSIZE];
+            const int cmpBytes = LZ4_compress_HC_continue(lz4Stream, inpPtr, cmpBuf, inpBytes, CMPBUFSIZE);
 
             if(cmpBytes <= 0) break;
             write_int32(outFp, cmpBytes);
@@ -94,13 +96,11 @@ void test_decompress(FILE* outFp, FILE* inpFp)
     LZ4_streamDecode_t lz4StreamDecode_body = { 0 };
     LZ4_streamDecode_t* lz4StreamDecode = &lz4StreamDecode_body;
 
-    for(;;)
-    {
+    for(;;) {
         int  cmpBytes = 0;
-        char cmpBuf[LZ4_COMPRESSBOUND(MESSAGE_MAX_BYTES)];
+        char cmpBuf[CMPBUFSIZE];
 
-        {
-            const size_t r0 = read_int32(inpFp, &cmpBytes);
+        {   const size_t r0 = read_int32(inpFp, &cmpBytes);
             size_t r1;
             if(r0 != 1 || cmpBytes <= 0)
                 break;
@@ -110,8 +110,7 @@ void test_decompress(FILE* outFp, FILE* inpFp)
                 break;
         }
 
-        {
-            char* const decPtr = &decBuf[decOffset];
+        {   char* const decPtr = &decBuf[decOffset];
             const int decBytes = LZ4_decompress_safe_continue(
                 lz4StreamDecode, cmpBuf, decPtr, cmpBytes, MESSAGE_MAX_BYTES);
             if(decBytes <= 0)
@@ -135,8 +134,7 @@ size_t compare(FILE* f0, FILE* f1)
 {
     size_t result = 1;
 
-    for (;;)
-    {
+    for (;;) {
         char b0[65536];
         char b1[65536];
         const size_t r0 = fread(b0, 1, sizeof(b0), f0);
@@ -144,16 +142,14 @@ size_t compare(FILE* f0, FILE* f1)
 
         if ((r0==0) && (r1==0)) return 0;   // success
 
-        if (r0 != r1)
-        {
+        if (r0 != r1) {
             size_t smallest = r0;
             if (r1<r0) smallest = r1;
             result += smallest;
             break;
         }
 
-        if (memcmp(b0, b1, r0))
-        {
+        if (memcmp(b0, b1, r0)) {
             unsigned errorPos = 0;
             while ((errorPos < r0) && (b0[errorPos]==b1[errorPos])) errorPos++;
             result += errorPos;
@@ -167,7 +163,7 @@ size_t compare(FILE* f0, FILE* f1)
 }
 
 
-int main(int argc, char** argv)
+int main(int argc, const char** argv)
 {
     char inpFilename[256] = { 0 };
     char lz4Filename[256] = { 0 };
@@ -181,7 +177,7 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (!strcmp(argv[1], "-p")) pause = 1, fileID = 2;
+    if (!strcmp(argv[1], "-p")) { pause = 1; fileID = 2; }
 
     snprintf(inpFilename, 256, "%s", argv[fileID]);
     snprintf(lz4Filename, 256, "%s.lz4s-%d", argv[fileID], 9);
@@ -192,9 +188,8 @@ int main(int argc, char** argv)
     printf("decoded = [%s]\n", decFilename);
 
     // compress
-    {
-        FILE* inpFp = fopen(inpFilename, "rb");
-        FILE* outFp = fopen(lz4Filename, "wb");
+    {   FILE* const inpFp = fopen(inpFilename, "rb");
+        FILE* const outFp = fopen(lz4Filename, "wb");
 
         test_compress(outFp, inpFp);
 
@@ -203,9 +198,8 @@ int main(int argc, char** argv)
     }
 
     // decompress
-    {
-        FILE* inpFp = fopen(lz4Filename, "rb");
-        FILE* outFp = fopen(decFilename, "wb");
+    {   FILE* const inpFp = fopen(lz4Filename, "rb");
+        FILE* const outFp = fopen(decFilename, "wb");
 
         test_decompress(outFp, inpFp);
 
@@ -214,9 +208,8 @@ int main(int argc, char** argv)
     }
 
     // verify
-    {
-        FILE* inpFp = fopen(inpFilename, "rb");
-        FILE* decFp = fopen(decFilename, "rb");
+    {   FILE* const inpFp = fopen(inpFilename, "rb");
+        FILE* const decFp = fopen(decFilename, "rb");
 
         const size_t cmp = compare(inpFp, decFp);
         if(0 == cmp) {
@@ -229,10 +222,10 @@ int main(int argc, char** argv)
         fclose(inpFp);
     }
 
-    if (pause)
-    {
+    if (pause) {
+        int unused;
         printf("Press enter to continue ...\n");
-        getchar();
+        unused = getchar(); (void)unused;   /* silence static analyzer */
     }
 
     return 0;
