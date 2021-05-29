@@ -215,12 +215,15 @@ ctocpptest: clean
 	CC=$(TESTCC) $(MAKE) -C $(TESTDIR) CFLAGS="$(CFLAGS)" all
 
 .PHONY: c_standards
-c_standards: c_standards_before_c11 c_standards_c11
+c_standards: c_standards_c11 c_standards_c99 c_standards_c90
 
-.PHONY: c_standards_before_c11
-c_standards_before_c11: clean
+.PHONY: c_standards_c90
+c_standards_c90: clean
 	$(MAKE) clean; CFLAGS="-std=c90   -Werror -pedantic -Wno-long-long -Wno-variadic-macros" $(MAKE) allmost
 	$(MAKE) clean; CFLAGS="-std=gnu90 -Werror -pedantic -Wno-long-long -Wno-variadic-macros" $(MAKE) allmost
+
+.PHONY: c_standards_c99
+c_standards_c99: clean
 	$(MAKE) clean; CFLAGS="-std=c99   -Werror -pedantic" $(MAKE) all
 	$(MAKE) clean; CFLAGS="-std=gnu99 -Werror -pedantic" $(MAKE) all
 
