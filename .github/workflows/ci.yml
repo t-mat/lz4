@@ -108,68 +108,69 @@ jobs:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
-          # cc_name : label name.  string.
-          # cc_pkg  : apt-get package name.
-          # cc      : C compiler executable.
-          # os      : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
-
+          # You can access the following values via ${{ matrix.??? }}
+          #   name : Label name.
+          #   pkg  : apt-get package name.
+          #   cc   : C compiler executable.
+          #   cxx  : C++ compiler executable for `make ctocpptest`.
+          #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+  
           # Default C compilers
-          #  We use 'ubuntu-latest' for default C compilers.
-          { cc_name: 'cc',         cc_pkg: '',        cc: cc,        cxx: cxx,          os: ubuntu-latest, },
-          { cc_name: 'gcc',        cc_pkg: '',        cc: gcc,       cxx: g++,          os: ubuntu-latest, },
-          { cc_name: 'clang',      cc_pkg: '',        cc: clang,     cxx: clang++,      os: ubuntu-latest, },
-
+          #  We use 'ubuntu-latest' for default C/C++ compilers.
+          { name: 'cc',         pkg: '',                  cc: cc,        cxx: c++,          os: ubuntu-latest, },
+          { name: 'gcc',        pkg: '',                  cc: gcc,       cxx: g++,          os: ubuntu-latest, },
+          { name: 'clang',      pkg: '',                  cc: clang,     cxx: clang++,      os: ubuntu-latest, },
 
           # gcc
-          { cc_name: 'gcc 11',     cc_pkg: gcc-11,    cc: gcc-11,    cxx: g++-11,       os: ubuntu-20.04,  },
-          { cc_name: 'gcc 10',     cc_pkg: gcc-10,    cc: gcc-10,    cxx: g++-10,       os: ubuntu-20.04,  },
-          { cc_name: 'gcc 9',      cc_pkg: gcc-9,     cc: gcc-9,     cxx: g++-9,        os: ubuntu-20.04,  },
-          { cc_name: 'gcc 8',      cc_pkg: gcc-8,     cc: gcc-8,     cxx: g++-8,        os: ubuntu-20.04,  },
-          { cc_name: 'gcc 7',      cc_pkg: gcc-7,     cc: gcc-7,     cxx: g++-7,        os: ubuntu-20.04,  },
+          { name: 'gcc 11',     pkg: 'gcc-11',            cc: gcc-11,    cxx: g++-11,       os: ubuntu-20.04,  },
+          { name: 'gcc 10',     pkg: 'gcc-10',            cc: gcc-10,    cxx: g++-10,       os: ubuntu-20.04,  },
+          { name: 'gcc 9',      pkg: 'gcc-9',             cc: gcc-9,     cxx: g++-9,        os: ubuntu-20.04,  },
+          { name: 'gcc 8',      pkg: 'gcc-8 g++-8',       cc: gcc-8,     cxx: g++-8,        os: ubuntu-20.04,  },
+          { name: 'gcc 7',      pkg: 'gcc-7 g++-7',       cc: gcc-7,     cxx: g++-7,        os: ubuntu-20.04,  },
 
           # gcc, ubuntu-18.04
-          { cc_name: 'gcc 6',      cc_pkg: gcc-6,     cc: gcc-6,     cxx: g++-6,        os: ubuntu-18.04,  },
-          { cc_name: 'gcc 5',      cc_pkg: gcc-5,     cc: gcc-5,     cxx: g++-5,        os: ubuntu-18.04,  },
-          { cc_name: 'gcc 4.8',    cc_pkg: gcc-4.8,   cc: gcc-4.8,   cxx: g++-4.8,      os: ubuntu-18.04,  },
+          { name: 'gcc 6',      pkg: 'gcc-6 g++-6',       cc: gcc-6,     cxx: g++-6,        os: ubuntu-18.04,  },
+          { name: 'gcc 5',      pkg: 'gcc-5 g++-5',       cc: gcc-5,     cxx: g++-5,        os: ubuntu-18.04,  },
+          { name: 'gcc 4.8',    pkg: 'gcc-4.8 g++-4.8',   cc: gcc-4.8,   cxx: g++-4.8,      os: ubuntu-18.04,  },
 
           # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { cc_name: 'gcc 4.7',    cc_pkg: gcc-4.7,   cc: gcc-4.7,   cxx: g++-4.7,      os: ubuntu-16.04,  },
-          { cc_name: 'gcc 4.6',    cc_pkg: gcc-4.6,   cc: gcc-4.6,   cxx: g++-4.6,      os: ubuntu-16.04,  },
-          #{cc_name: 'gcc 4.5',    cc_pkg: gcc-4.5,   cc: gcc-4.5,   cxx: g++-4.5,      os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
-          { cc_name: 'gcc 4.4',    cc_pkg: gcc-4.4,   cc: gcc-4.4,   cxx: g++-4.4,      os: ubuntu-16.04,  },
+          { name: 'gcc 4.7',    pkg: 'gcc-4.7 g++-4.7',   cc: gcc-4.7,   cxx: g++-4.7,      os: ubuntu-16.04,  },
+          { name: 'gcc 4.6',    pkg: 'gcc-4.6 g++-4.6',   cc: gcc-4.6,   cxx: g++-4.6,      os: ubuntu-16.04,  },
+          #{name: 'gcc 4.5',    pkg: 'gcc-4.5 g++-4.5',   cc: gcc-4.5,   cxx: g++-4.5,      os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
+          { name: 'gcc 4.4',    pkg: 'gcc-4.4 g++-4.4',   cc: gcc-4.4,   cxx: g++-4.4,      os: ubuntu-16.04,  },
 
 
           # clang
-          { cc_name: 'clang 12',   cc_pkg: clang-12,  cc: clang-12,  cxx: clang++-12,   os: ubuntu-20.04,  },
-          { cc_name: 'clang 11',   cc_pkg: clang-11,  cc: clang-11,  cxx: clang++-11,   os: ubuntu-20.04,  },
-          { cc_name: 'clang 10',   cc_pkg: clang-10,  cc: clang-10,  cxx: clang++-10,   os: ubuntu-20.04,  },
-          { cc_name: 'clang 9',    cc_pkg: clang-9,   cc: clang-9,   cxx: clang++-9,    os: ubuntu-20.04,  },
-          { cc_name: 'clang 8',    cc_pkg: clang-8,   cc: clang-8,   cxx: clang++-8,    os: ubuntu-20.04,  },
-          { cc_name: 'clang 7',    cc_pkg: clang-7,   cc: clang-7,   cxx: clang++-7,    os: ubuntu-20.04,  },
-          { cc_name: 'clang 6',    cc_pkg: clang-6.0, cc: clang-6.0, cxx: clang++-6.0,  os: ubuntu-20.04,  },
+          { name: 'clang 12',   pkg: 'clang-12',          cc: clang-12,  cxx: clang++-12,   os: ubuntu-20.04,  },
+          { name: 'clang 11',   pkg: 'clang-11',          cc: clang-11,  cxx: clang++-11,   os: ubuntu-20.04,  },
+          { name: 'clang 10',   pkg: 'clang-10',          cc: clang-10,  cxx: clang++-10,   os: ubuntu-20.04,  },
+          { name: 'clang 9',    pkg: 'clang-9',           cc: clang-9,   cxx: clang++-9,    os: ubuntu-20.04,  },
+          { name: 'clang 8',    pkg: 'clang-8',           cc: clang-8,   cxx: clang++-8,    os: ubuntu-20.04,  },
+          { name: 'clang 7',    pkg: 'clang-7',           cc: clang-7,   cxx: clang++-7,    os: ubuntu-20.04,  },
+          { name: 'clang 6',    pkg: 'clang-6.0',         cc: clang-6.0, cxx: clang++-6.0,  os: ubuntu-20.04,  },
 
           # clang, ubuntu-18.04
-          { cc_name: 'clang 5',    cc_pkg: clang-5.0, cc: clang-5.0, cxx: clang++-5.0,  os: ubuntu-18.04,  },
-          { cc_name: 'clang 4',    cc_pkg: clang-4.0, cc: clang-4.0, cxx: clang++-4.0,  os: ubuntu-18.04,  },
-          { cc_name: 'clang 3.9',  cc_pkg: clang-3.9, cc: clang-3.9, cxx: clang++-3.9,  os: ubuntu-18.04,  },
+          { name: 'clang 5',    pkg: 'clang-5.0',         cc: clang-5.0, cxx: clang++-5.0,  os: ubuntu-18.04,  },
+          { name: 'clang 4',    pkg: 'clang-4.0',         cc: clang-4.0, cxx: clang++-4.0,  os: ubuntu-18.04,  },
+          { name: 'clang 3.9',  pkg: 'clang-3.9',         cc: clang-3.9, cxx: clang++-3.9,  os: ubuntu-18.04,  },
 
           # clang, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { cc_name: 'clang 3.8',  cc_pkg: clang-3.8, cc: clang-3.8, cxx: clang++-3.8,  os: ubuntu-16.04,  },
-          { cc_name: 'clang 3.7',  cc_pkg: clang-3.7, cc: clang-3.7, cxx: clang++-3.7,  os: ubuntu-16.04,  },
-          { cc_name: 'clang 3.6',  cc_pkg: clang-3.6, cc: clang-3.6, cxx: clang++-3.6,  os: ubuntu-16.04,  },
-          { cc_name: 'clang 3.5',  cc_pkg: clang-3.5, cc: clang-3.5, cxx: clang++-3.5,  os: ubuntu-16.04,  },
+          { name: 'clang 3.8',  pkg: 'clang-3.8',         cc: clang-3.8, cxx: clang++-3.8,  os: ubuntu-16.04,  },
+          { name: 'clang 3.7',  pkg: 'clang-3.7',         cc: clang-3.7, cxx: clang++-3.7,  os: ubuntu-16.04,  },
+          { name: 'clang 3.6',  pkg: 'clang-3.6',         cc: clang-3.6, cxx: clang++-3.6,  os: ubuntu-16.04,  },
+          { name: 'clang 3.5',  pkg: 'clang-3.5',         cc: clang-3.5, cxx: clang++-3.5,  os: ubuntu-16.04,  },
         ]
 
-    name: ${{ matrix.cc_name }}, ${{ matrix.os }}
+    name: ${{ matrix.name }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:                        # Set environment variables
-      # We globally set CC to improve compatibility with .travis.yml
+      # We globally set CC and CXX to improve compatibility with .travis.yml
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
     - name: apt-get install
-      run: sudo apt-get install gcc-multilib ${{ matrix.cc_pkg }}
+      run: sudo apt-get install gcc-multilib ${{ matrix.pkg }}
 
     - name: Compiler information
       run: |
