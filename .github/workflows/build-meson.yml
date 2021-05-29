@@ -1,0 +1,44 @@
+# Test for meson build system
+name: meson
+on: [push, pull_request]
+jobs:
+  lz4-build-meson:
+    name: Meson + Ninja
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - uses: actions/setup-python@v2 # https://github.com/actions/setup-python
+      with:
+        python-version: '3.x'
+
+    - name: Install
+      run: |
+        sudo apt-get install tree ninja-build
+        python -m pip install --upgrade pip
+        pip3 install --user meson
+
+    - name: Environment info
+      run: |
+        echo && clang --version
+        echo && python --version
+        echo && meson --version
+
+    - name: meson
+      # 'run: >' replaces all newlines in the following block with spaces
+      run: >
+        meson setup
+        --buildtype=debug
+        -Db_lundef=false
+        -Dauto_features=enabled
+        -Ddefault_library=both
+        -Dbin_programs=true
+        -Dbin_contrib=true
+        -Dbin_tests=true
+        -Dbin_examples=true
+        contrib/meson build
+
+    - name: staging
+      run: |
+        cd build
+        DESTDIR=./staging ninja install
+        tree ./staging

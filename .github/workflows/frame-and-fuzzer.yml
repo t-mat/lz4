@@ -1,0 +1,22 @@
+name: Frame and fuzzer test
+on: [push, pull_request]
+jobs:
+  # travis-ci: (Precise) frame and fuzzer test
+  lz4-frame-and-fuzzer:
+    name: Linux x64 frame and fuzzer test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+
+    - name: setup
+      run: |
+        sudo sysctl -w vm.mmap_min_addr=4096
+
+    - name: frame + fuzzer test
+      run: |
+        make V=1 -C tests test-frametest test-fuzzer
+        make V=1 -C tests test-frametest32 test-fuzzer32

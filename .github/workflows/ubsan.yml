@@ -1,0 +1,13 @@
+name: ubsan
+on: [push, pull_request]
+jobs:
+  lz4-ubsan:
+    name: Linux x64 ubsan
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: ubsan
+      # For now, we ignore the exit code of `make usan`.
+      # See "Known issues" in README.md
+      run: |
+        make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || echo Ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983

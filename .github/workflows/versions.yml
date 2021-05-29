@@ -1,0 +1,16 @@
+name: versions test
+on: [push, pull_request]
+jobs:
+  lz4-versions:
+    name: Linux x64 version test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+
+    - name: make -C tests versionsTest
+      run: |
+        make V=1 -C tests versionsTest

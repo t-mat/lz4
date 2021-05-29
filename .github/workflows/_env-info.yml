@@ -3,12 +3,12 @@ name: CI info
 
 on: [push, pull_request]
 jobs:
-  env-info:
+  lz4-env-info:
     name: Linux Virtual Env Info (${{ matrix.os }})
     strategy:
       matrix:
         include: [
-          { os: ubuntu-latest,  }, 
+          { os: ubuntu-latest,  }, # https://github.com/actions/virtual-environments/
           { os: ubuntu-20.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
           { os: ubuntu-18.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
           { os: ubuntu-16.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
@@ -19,16 +19,22 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: cc --version
-      run: echo && cc --version
+      run: echo && which cc && cc --version
 
     - name: gcc --version
-      run: echo && gcc --version
+      run: echo && which gcc && gcc --version
 
     - name: clang --version
-      run: echo && clang --version
+      run: echo && which clang && clang --version
 
     - name: make -v
-      run: echo && make -v
+      run: echo && which make && make -v
+
+    - name: g++ --version
+      run: echo && which g++ && g++ --version
+
+    - name: git --version
+      run: echo && which git && git --version
 
     - name: gcc packages (apt-cache)
       run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
@@ -38,9 +44,3 @@ jobs:
 
     - name: QEMU packages (apt-cache)
       run: apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort
-
-    - name: git --version
-      run: echo && git --version
-
-    - name: g++ --version
-      run: echo && g++ --version

@@ -1,0 +1,21 @@
+name: cppcheck
+on: [push, pull_request]
+jobs:
+  lz4-cppcheck:
+    name: Linux x64 cppcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: apt-get install
+      run: |
+        sudo apt-get install cppcheck
+
+    - name: Environment info
+      run: |
+        echo && which cppcheck && cppcheck --version
+
+    - name: cppcheck
+      run: |
+        # This test script ignores the exit code of cppcheck.
+        # See knowin issues in README.md.
+        make V=1 clean cppcheck || echo There are some cppcheck reports

@@ -1,0 +1,24 @@
+# Test for make build system
+name: make
+on: [push, pull_request]
+jobs:
+  lz4-build-make:
+    name: Linux x64 make
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: make
+      run: |
+        make V=1
+
+
+  lz4-install:
+    name: Install test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: install
+      run: |
+        make V=1 clean travis-install
