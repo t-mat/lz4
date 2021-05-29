@@ -234,6 +234,7 @@ jobs:
       XEMU: ${{ matrix.xemu }}
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
+    - name: apt-get install
       run: |
         sudo apt-get install gcc-multilib
         sudo apt-get install qemu-utils qemu-user-static
