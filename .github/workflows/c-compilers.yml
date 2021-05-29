@@ -134,7 +134,7 @@ jobs:
     - name: make -C tests test MOREFLAGS='-mx32' || echo Ignore failure for now.
       if: ${{ matrix.x32 == 'fail' }}
       run: |
-        LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || (echo Ignore FAIL for now. && $(exit 0)) && (echo SUCCESS.  But indicate RED to prompt update the case. && $(exit 1))
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || (echo Ignore FAIL for now. && $(exit 0))
 
     - name: make -C tests test-lz4c32
       if: ${{ matrix.x86 != 'fail' }}
@@ -144,4 +144,4 @@ jobs:
     - name: make -C tests test-lz4c32 || echo Ignore failure for now.
       if: ${{ matrix.x86 == 'fail' }}
       run: |
-        LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || (echo Ignore FAIL for now. && $(exit 0)) && (echo SUCCESS.  But indicate RED to prompt update the case. && $(exit 1))
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || (echo Ignore FAIL for now. && $(exit 0))

@@ -21,4 +21,4 @@ jobs:
       # For now, we ignore the exit code of `make usan`.
       # See "Known issues" in README.md
       run: |
-        make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || echo Ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+        CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || echo Ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
