@@ -1,26 +1,26 @@
-name: Benchmark
-on: [push, pull_request]
-jobs:
-  lz4-benchmark:
-    name: Linux x64 benchmark test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-
-    - name: apt-get install
-      run: |
-        sudo apt-get install gcc-multilib
-
-    - name: benchmark (-C tests test-lz4)
-      run: |
-        make V=1 -C tests test-lz4
-
-    - name: benchmark (-C tests test-lz4c)
-      run: |
-        make V=1 -C tests test-lz4c
-        make V=1 -C tests test-lz4c32
-
-    - name: benchmark (-C tests test-fullbench)
-      run: |
-        make V=1 -C tests test-fullbench
-        make V=1 -C tests test-fullbench32
+####name: Benchmark
+####on: [push, pull_request]
+####jobs:
+####  lz4-benchmark:
+####    name: Benchmark, tests-benchmark.yml
+####    runs-on: ubuntu-latest
+####    steps:
+####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+####
+####    - name: apt-get install
+####      run: |
+####        sudo apt-get install gcc-multilib
+####
+####    - name: benchmark (-C tests test-lz4)
+####      run: |
+####        make V=1 -C tests test-lz4
+####
+####    - name: benchmark (-C tests test-lz4c)
+####      run: |
+####        make V=1 -C tests test-lz4c
+####        make V=1 -C tests test-lz4c32
+####
+####    - name: benchmark (-C tests test-fullbench)
+####      run: |
+####        make V=1 -C tests test-fullbench
+####        make V=1 -C tests test-fullbench32

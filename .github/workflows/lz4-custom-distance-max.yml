@@ -1,18 +1,19 @@
-name: Custom LZ4_DISTANCE_MAX
-on: [push, pull_request]
-jobs:
-  # travis-ci: Custom LZ4_DISTANCE_MAX ; lz4-wlib (CLI linked to dynamic library); LZ4_USER_MEMORY_FUNCTIONS
-  lz4-custom-distance:
-    name: Linux x64 Custom LZ4_DISTANCE_MAX
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2 # https://github.com/actions/checkout
-    - name: custom LZ4_DISTANCE_MAX
-      run: |
-        MOREFLAGS='-DLZ4_DISTANCE_MAX=8000' make V=1 check
-        make V=1 clean
-        make V=1 -C programs lz4-wlib
-        make V=1 clean
-        make V=1 -C tests fullbench-wmalloc  # test LZ4_USER_MEMORY_FUNCTIONS
-        make V=1 clean
-        CC="c++ -Wno-deprecated" make V=1 -C tests fullbench-wmalloc  # stricter function signature check
+####name: Custom LZ4_DISTANCE_MAX
+####on: [push, pull_request]
+####jobs:
+####  # travis-ci: Custom LZ4_DISTANCE_MAX ; lz4-wlib (CLI linked to dynamic library); LZ4_USER_MEMORY_FUNCTIONS
+####  lz4-custom-distance:
+####    name: Custom LZ4_DISTANCE_MAX, lz4-custom-distance-max.yml
+####    runs-on: ubuntu-latest
+####    steps:
+####    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+####
+####    - name: custom LZ4_DISTANCE_MAX
+####      run: |
+####        MOREFLAGS='-DLZ4_DISTANCE_MAX=8000' make V=1 check
+####        make V=1 clean
+####        make V=1 -C programs lz4-wlib
+####        make V=1 clean
+####        make V=1 -C tests fullbench-wmalloc  # test LZ4_USER_MEMORY_FUNCTIONS
+####        make V=1 clean
+####        CC="c++ -Wno-deprecated" make V=1 -C tests fullbench-wmalloc  # stricter function signature check
