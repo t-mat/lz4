@@ -14,7 +14,7 @@
 #   See https://github.com/lz4/lz4/pull/983 for details.  Also you can
 #   investigate its raw log in "Linux x64 usan" at the GitHub Actions.
 #
-# - This test script ignores exit code of cppcheck which can see under
+# - This test script ignores the exit code of cppcheck which can see under
 #   Job:Linux x64 scan-build + cppcheck in the GitHub Actions report.
 #   Because this project doesn't 100% follow their recommendation.
 #   Also sometimes it reports false positives.
@@ -32,10 +32,10 @@
 # - To fail earlier, order of tests in the same job are roughly sorted by
 #   elapsed time.
 #
+# - We use `make V=1` as much as possible.  It helps to understand what causes
+#   error and prevents to overlook basic mistakes.
+#
 # Tests which we still leave at travis-ci
-# - name: (Trusty) gcc-4.4 compilation
-# - name: (Xenial) gcc-5 compilation
-# - name: (Trusty) clang-3.8 compilation
 # - name: Compile OSS-Fuzz targets
 # - name: tag build
 # - name: aarch64 real-hw tests
@@ -49,112 +49,66 @@ name: lz4 CI
 on: [push, pull_request]
 
 jobs:
-  # CI Environment information
-  #
-  # - "ubuntu-latest" (Ubuntu 20.04) has the following software
-  #   https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-  env-info:
-    name: Linux Virtual Env Info (${{ matrix.os }})
-    strategy:
-      matrix:
-        include: [
-          { os: ubuntu-latest,  }, 
-          { os: ubuntu-20.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
-          { os: ubuntu-18.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
-          { os: ubuntu-16.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
-        ]
-
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: cc --version
-      run: echo && cc --version
-
-    - name: gcc --version
-      run: echo && gcc --version
-
-    - name: clang --version
-      run: echo && clang --version
-
-    - name: make -v
-      run: echo && make -v
-
-    - name: gcc packages (apt-cache)
-      run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
-
-    - name: clang packages (apt-cache)
-      run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
-
-    - name: QEMU packages (apt-cache)
-      run: apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort
-
-    - name: git --version
-      run: echo && git --version
-
-    - name: g++ --version
-      run: echo && g++ --version
-
-
   # Test various C compilers
   #
   c-compilers:
-    name: $CC=${{ matrix.name }}, ${{ matrix.os }}
+    name: $CC=${{ matrix.cc }}, ${{ matrix.os }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
           # You can access the following values via ${{ matrix.??? }}
           #   name : Label name.
-          #   pkg  : apt-get package name.
+          #   pkgs : apt-get package names.  You can include multiple package names which are delimited by space.
           #   cc   : C compiler executable.
           #   cxx  : C++ compiler executable for `make ctocpptest`.
           #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
-  
+
           # Default C compilers
-          #  We use 'ubuntu-latest' for default C/C++ compilers.
-          { name: 'cc',         pkg: '',                  cc: cc,        cxx: c++,          os: ubuntu-latest, },
-          { name: 'gcc',        pkg: '',                  cc: gcc,       cxx: g++,          os: ubuntu-latest, },
-          { name: 'clang',      pkg: '',                  cc: clang,     cxx: clang++,      os: ubuntu-latest, },
+          #  We always use 'ubuntu-latest' for default C/C++ compilers.
+          { pkgs: '',                cc: cc,        cxx: c++,         os: ubuntu-latest, },
+          { pkgs: '',                cc: gcc,       cxx: g++,         os: ubuntu-latest, },
+          { pkgs: '',                cc: clang,     cxx: clang++,     os: ubuntu-latest, },
+
 
           # gcc
-          { name: 'gcc-11',     pkg: 'gcc-11',            cc: gcc-11,    cxx: g++-11,       os: ubuntu-20.04,  },
-          { name: 'gcc-10',     pkg: 'gcc-10',            cc: gcc-10,    cxx: g++-10,       os: ubuntu-20.04,  },
-          { name: 'gcc-9',      pkg: 'gcc-9',             cc: gcc-9,     cxx: g++-9,        os: ubuntu-20.04,  },
-          { name: 'gcc-8',      pkg: 'gcc-8 g++-8',       cc: gcc-8,     cxx: g++-8,        os: ubuntu-20.04,  },
-          { name: 'gcc-7',      pkg: 'gcc-7 g++-7',       cc: gcc-7,     cxx: g++-7,        os: ubuntu-20.04,  },
+          { pkgs: 'gcc-11',          cc: gcc-11,    cxx: g++-11,      os: ubuntu-20.04,  },
+          { pkgs: 'gcc-10',          cc: gcc-10,    cxx: g++-10,      os: ubuntu-20.04,  },
+          { pkgs: 'gcc-9',           cc: gcc-9,     cxx: g++-9,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-8 g++-8',     cc: gcc-8,     cxx: g++-8,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-7 g++-7',     cc: gcc-7,     cxx: g++-7,       os: ubuntu-20.04,  },
 
           # gcc, ubuntu-18.04
-          { name: 'gcc-6',      pkg: 'gcc-6 g++-6',       cc: gcc-6,     cxx: g++-6,        os: ubuntu-18.04,  },
-          { name: 'gcc-5',      pkg: 'gcc-5 g++-5',       cc: gcc-5,     cxx: g++-5,        os: ubuntu-18.04,  },
-          { name: 'gcc-4.8',    pkg: 'gcc-4.8 g++-4.8',   cc: gcc-4.8,   cxx: g++-4.8,      os: ubuntu-18.04,  },
+          { pkgs: 'gcc-6 g++-6',     cc: gcc-6,     cxx: g++-6,       os: ubuntu-18.04,  },
+          { pkgs: 'gcc-5 g++-5',     cc: gcc-5,     cxx: g++-5,       os: ubuntu-18.04,  },
+          { pkgs: 'gcc-4.8 g++-4.8', cc: gcc-4.8,   cxx: g++-4.8,     os: ubuntu-18.04,  },
 
           # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { name: 'gcc-4.7',    pkg: 'gcc-4.7 g++-4.7',   cc: gcc-4.7,   cxx: g++-4.7,      os: ubuntu-16.04,  },
-          { name: 'gcc-4.6',    pkg: 'gcc-4.6 g++-4.6',   cc: gcc-4.6,   cxx: g++-4.6,      os: ubuntu-16.04,  },
-          #{name: 'gcc-4.5',    pkg: 'gcc-4.5 g++-4.5',   cc: gcc-4.5,   cxx: g++-4.5,      os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
-          { name: 'gcc-4.4',    pkg: 'gcc-4.4 g++-4.4',   cc: gcc-4.4,   cxx: g++-4.4,      os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.7 g++-4.7', cc: gcc-4.7,   cxx: g++-4.7,     os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.6 g++-4.6', cc: gcc-4.6,   cxx: g++-4.6,     os: ubuntu-16.04,  },
+          #{pkgs: 'gcc-4.5 g++-4.5', cc: gcc-4.5,   cxx: g++-4.5,     os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
+          { pkgs: 'gcc-4.4 g++-4.4', cc: gcc-4.4,   cxx: g++-4.4,     os: ubuntu-16.04,  },
 
 
           # clang
-          { name: 'clang 12',   pkg: 'clang-12',          cc: clang-12,  cxx: clang++-12,   os: ubuntu-20.04,  },
-          { name: 'clang 11',   pkg: 'clang-11',          cc: clang-11,  cxx: clang++-11,   os: ubuntu-20.04,  },
-          { name: 'clang 10',   pkg: 'clang-10',          cc: clang-10,  cxx: clang++-10,   os: ubuntu-20.04,  },
-          { name: 'clang 9',    pkg: 'clang-9',           cc: clang-9,   cxx: clang++-9,    os: ubuntu-20.04,  },
-          { name: 'clang 8',    pkg: 'clang-8',           cc: clang-8,   cxx: clang++-8,    os: ubuntu-20.04,  },
-          { name: 'clang 7',    pkg: 'clang-7',           cc: clang-7,   cxx: clang++-7,    os: ubuntu-20.04,  },
-          { name: 'clang 6',    pkg: 'clang-6.0',         cc: clang-6.0, cxx: clang++-6.0,  os: ubuntu-20.04,  },
+          { pkgs: 'clang-12',  cc: clang-12,  cxx: clang++-12,  os: ubuntu-20.04,  },
+          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  os: ubuntu-20.04,  },
+          { pkgs: 'clang-10',  cc: clang-10,  cxx: clang++-10,  os: ubuntu-20.04,  },
+          { pkgs: 'clang-9',   cc: clang-9,   cxx: clang++-9,   os: ubuntu-20.04,  },
+          { pkgs: 'clang-8',   cc: clang-8,   cxx: clang++-8,   os: ubuntu-20.04,  },
+          { pkgs: 'clang-7',   cc: clang-7,   cxx: clang++-7,   os: ubuntu-20.04,  },
+          { pkgs: 'clang-6.0', cc: clang-6.0, cxx: clang++-6.0, os: ubuntu-20.04,  },
 
           # clang, ubuntu-18.04
-          { name: 'clang 5',    pkg: 'clang-5.0',         cc: clang-5.0, cxx: clang++-5.0,  os: ubuntu-18.04,  },
-          { name: 'clang 4',    pkg: 'clang-4.0',         cc: clang-4.0, cxx: clang++-4.0,  os: ubuntu-18.04,  },
-          { name: 'clang 3.9',  pkg: 'clang-3.9',         cc: clang-3.9, cxx: clang++-3.9,  os: ubuntu-18.04,  },
+          { pkgs: 'clang-5.0', cc: clang-5.0, cxx: clang++-5.0, os: ubuntu-18.04,  },
+          { pkgs: 'clang-4.0', cc: clang-4.0, cxx: clang++-4.0, os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.9', cc: clang-3.9, cxx: clang++-3.9, os: ubuntu-18.04,  },
 
           # clang, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { name: 'clang 3.8',  pkg: 'clang-3.8',         cc: clang-3.8, cxx: clang++-3.8,  os: ubuntu-16.04,  },
-          { name: 'clang 3.7',  pkg: 'clang-3.7',         cc: clang-3.7, cxx: clang++-3.7,  os: ubuntu-16.04,  },
-          { name: 'clang 3.6',  pkg: 'clang-3.6',         cc: clang-3.6, cxx: clang++-3.6,  os: ubuntu-16.04,  },
-          { name: 'clang 3.5',  pkg: 'clang-3.5',         cc: clang-3.5, cxx: clang++-3.5,  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.8', cc: clang-3.8, cxx: clang++-3.8, os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.7', cc: clang-3.7, cxx: clang++-3.7, os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.6', cc: clang-3.6, cxx: clang++-3.6, os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.5', cc: clang-3.5, cxx: clang++-3.5, os: ubuntu-16.04,  },
         ]
 
     runs-on: ${{ matrix.os }}
@@ -167,7 +121,7 @@ jobs:
     - name: apt-get install
       run: |
         sudo apt-get install gcc-multilib
-        sudo apt-get install ${{ matrix.pkg }}
+        sudo apt-get install ${{ matrix.pkgs }}
 
     - name: Environment info
       run: |
@@ -216,16 +170,17 @@ jobs:
         include: [
           # You can access the following values via ${{ matrix.??? }}
           #   name : Label name.
-          #   pkg  : apt-get package name.
+          #   type : Architecture type for `if:` statement.
+          #   pkgs  : apt-get package names.  You can include multiple package names which are delimited by space.
           #   xcc  : gcc cross C compiler executable.
           #   xemu : QEMU static emulator executable.
           #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
   
-          { name: ARM,      pkg: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
-          { name: ARM64,    pkg: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
-          { name: PPC,      pkg: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
-          { name: PPC64LE,  pkg: 'qemu-system-ppc   gcc-powerpc64le-linux-gnu', xcc: powerpc64le-linux-gnu-gcc, xemu: qemu-ppc64le-static, os: ubuntu-latest, },
-          { name: S390X,    pkg: 'qemu-system-s390x gcc-s390x-linux-gnu',       xcc: s390x-linux-gnu-gcc,       xemu: qemu-s390x-static,   os: ubuntu-latest, },
+          { name: 'ARM',           type: ARM,      pkgs: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
+          { name: 'ARM64',         type: ARM64,    pkgs: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
+          { name: 'Power PC',      type: PPC,      pkgs: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
+          { name: 'Power PC64LE',  type: PPC64LE,  pkgs: 'qemu-system-ppc   gcc-powerpc64le-linux-gnu', xcc: powerpc64le-linux-gnu-gcc, xemu: qemu-ppc64le-static, os: ubuntu-latest, },
+          { name: 'S390X',         type: S390X,    pkgs: 'qemu-system-s390x gcc-s390x-linux-gnu',       xcc: s390x-linux-gnu-gcc,       xemu: qemu-s390x-static,   os: ubuntu-latest, },
         ]
 
     runs-on: ${{ matrix.os }}
@@ -238,7 +193,7 @@ jobs:
       run: |
         sudo apt-get install gcc-multilib
         sudo apt-get install qemu-utils qemu-user-static
-        sudo apt-get install ${{ matrix.pkg }}
+        sudo apt-get install ${{ matrix.pkgs }}
 
     - name: Environment info
       run: |
@@ -249,21 +204,94 @@ jobs:
         echo && $XEMU --version
 
 ####    - name: ARM
-####      if: ${{ matrix.name == 'ARM' }}
+####      if: ${{ matrix.type == 'ARM' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 ####
 ####    - name: ARM64
-####      if: ${{ matrix.name == 'ARM64' }}
+####      if: ${{ matrix.type == 'ARM64' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 ####
 ####    - name: PPC
-####      if: ${{ matrix.name == 'PPC' }}
+####      if: ${{ matrix.type == 'PPC' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 ####
 ####    - name: PPC64LE
-####      if: ${{ matrix.name == 'PPC64LE' }}
+####      if: ${{ matrix.type == 'PPC64LE' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
 ####
 ####    - name: S390X
-####      if: ${{ matrix.name == 'S390X' }}
+####      if: ${{ matrix.type == 'S390X' }}
 ####      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+
+
+  # macOS
+  macos-latest:
+    name: macOS general test
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Environment info
+      run: |
+        echo && clang --version
+        echo && sysctl -a | grep machdep.cpu   # cpuinfo
+
+    - name: make
+      run: |
+        CFLAGS="-Werror" make V=1 clean default
+
+    - name: library build
+      run: |
+        make V=1 clean default
+
+    - name: test
+      run: |
+        # test scenario where `stdout` is not the console
+        make V=1 clean test MOREFLAGS='-Werror -Wconversion -Wno-sign-conversion' | tee
+
+
+####  # CI Environment information
+####  #
+####  # - "ubuntu-latest" (Ubuntu 20.04) has the following software
+####  #   https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+####  env-info:
+####    name: Linux Virtual Env Info (${{ matrix.os }})
+####    strategy:
+####      matrix:
+####        include: [
+####          { os: ubuntu-latest,  }, 
+####          { os: ubuntu-20.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
+####          { os: ubuntu-18.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
+####          { os: ubuntu-16.04,   }, # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
+####        ]
+####
+####    runs-on: ${{ matrix.os }}
+####    steps:
+####    - uses: actions/checkout@v2
+####
+####    - name: cc --version
+####      run: echo && cc --version
+####
+####    - name: gcc --version
+####      run: echo && gcc --version
+####
+####    - name: clang --version
+####      run: echo && clang --version
+####
+####    - name: make -v
+####      run: echo && make -v
+####
+####    - name: gcc packages (apt-cache)
+####      run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
+####
+####    - name: clang packages (apt-cache)
+####      run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
+####
+####    - name: QEMU packages (apt-cache)
+####      run: apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort
+####
+####    - name: git --version
+####      run: echo && git --version
+####
+####    - name: g++ --version
+####      run: echo && g++ --version
