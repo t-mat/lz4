@@ -17,53 +17,55 @@ jobs:
           #   pkgs : apt-get package names.  You can include multiple package names which are delimited by space.
           #   cc   : C compiler executable.
           #   cxx  : C++ compiler executable for `make ctocpptest`.
+          #   stdc11 : contains 'yes' if compiler supports C11 standard.
+          #   m32  : contains 'yes' if compiler supports x32.
           #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
 
           # Default C compilers
           #  We always use 'ubuntu-latest' for default C/C++ compilers.
-          ####{ pkgs: '',                cc: cc,        cxx: c++,         os: ubuntu-latest, },
-          ####{ pkgs: '',                cc: gcc,       cxx: g++,         os: ubuntu-latest, },
-          { pkgs: '',                cc: clang,     cxx: clang++,     os: ubuntu-latest, },
+          ####{ pkgs: '',                cc: cc,        cxx: c++,         stdc11: yes,  x32: 'yes', os: ubuntu-latest, },
+          ####{ pkgs: '',                cc: gcc,       cxx: g++,         stdc11: 'yes',  x32: 'yes', os: ubuntu-latest, },
+          { pkgs: '',                cc: clang,     cxx: clang++,     stdc11: 'yes',  x32: 'yes', os: ubuntu-latest, },
 
 
           # gcc
-          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',        cc: gcc-11,    cxx: g++-11,      os: ubuntu-20.04,  },
-          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',        cc: gcc-10,    cxx: g++-10,      os: ubuntu-20.04,  },
-          { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',           cc: gcc-9,     cxx: g++-9,       os: ubuntu-20.04,  },
-          { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',     cc: gcc-8,     cxx: g++-8,       os: ubuntu-20.04,  },
-          { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',     cc: gcc-7,     cxx: g++-7,       os: ubuntu-20.04,  },
+          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',        cc: gcc-11,    cxx: g++-11,      stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',        cc: gcc-10,    cxx: g++-10,      stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',           cc: gcc-9,     cxx: g++-9,       stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',     cc: gcc-8,     cxx: g++-8,       stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',     cc: gcc-7,     cxx: g++-7,       stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
 
           # gcc, ubuntu-18.04
-          { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',     cc: gcc-6,     cxx: g++-6,       os: ubuntu-18.04,  },
-          { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev libx32gcc-5-dev',     cc: gcc-5,     cxx: g++-5,       os: ubuntu-18.04,  },
-          { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev libx32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     os: ubuntu-18.04,  },
+          { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',     cc: gcc-6,     cxx: g++-6,       stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
+          { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev libx32gcc-5-dev',     cc: gcc-5,     cxx: g++-5,       stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
+          { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev libx32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
 
           # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev libx32gcc-4.7-dev', cc: gcc-4.7,   cxx: g++-4.7,     os: ubuntu-16.04,  },
-          { pkgs: 'gcc-4.6 g++-4.6', cc: gcc-4.6,   cxx: g++-4.6,     os: ubuntu-16.04,  },
-          #{pkgs: 'gcc-4.5 g++-4.5', cc: gcc-4.5,   cxx: g++-4.5,     os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
-          { pkgs: 'gcc-4.4 g++-4.4', cc: gcc-4.4,   cxx: g++-4.4,     os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev libx32gcc-4.7-dev', cc: gcc-4.7,   cxx: g++-4.7,     stdc11: 'yes',  x32: 'yes', os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.6 g++-4.6', cc: gcc-4.6,   cxx: g++-4.6,     stdc11: 'no',  x32: 'yes', os: ubuntu-16.04,  },
+          #{pkgs: 'gcc-4.5 g++-4.5', cc: gcc-4.5,   cxx: g++-4.5,     stdc11: 'no',  x32: 'yes', os: ubuntu-16.04,  },  # Failed to install.  Dependent package is not installable.
+          { pkgs: 'gcc-4.4 g++-4.4', cc: gcc-4.4,   cxx: g++-4.4,     stdc11: 'no',  x32: 'yes', os: ubuntu-16.04,  },
 
 
           # clang
-          { pkgs: 'clang-12',  cc: clang-12,  cxx: clang++-12,  os: ubuntu-20.04,  },
-          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  os: ubuntu-20.04,  },
-          { pkgs: 'clang-10',  cc: clang-10,  cxx: clang++-10,  os: ubuntu-20.04,  },
-          { pkgs: 'clang-9',   cc: clang-9,   cxx: clang++-9,   os: ubuntu-20.04,  },
-          { pkgs: 'clang-8',   cc: clang-8,   cxx: clang++-8,   os: ubuntu-20.04,  },
-          { pkgs: 'clang-7',   cc: clang-7,   cxx: clang++-7,   os: ubuntu-20.04,  },
-          { pkgs: 'clang-6.0', cc: clang-6.0, cxx: clang++-6.0, os: ubuntu-20.04,  },
+          { pkgs: 'clang-12',  cc: clang-12,  cxx: clang++-12,  stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-11',  cc: clang-11,  cxx: clang++-11,  stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-10',  cc: clang-10,  cxx: clang++-10,  stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-9',   cc: clang-9,   cxx: clang++-9,   stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-8',   cc: clang-8,   cxx: clang++-8,   stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-7',   cc: clang-7,   cxx: clang++-7,   stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
+          { pkgs: 'clang-6.0', cc: clang-6.0, cxx: clang++-6.0, stdc11: 'yes',  x32: 'yes', os: ubuntu-20.04,  },
 
           # clang, ubuntu-18.04
-          { pkgs: 'clang-5.0', cc: clang-5.0, cxx: clang++-5.0, os: ubuntu-18.04,  },
-          { pkgs: 'clang-4.0', cc: clang-4.0, cxx: clang++-4.0, os: ubuntu-18.04,  },
-          { pkgs: 'clang-3.9', cc: clang-3.9, cxx: clang++-3.9, os: ubuntu-18.04,  },
+          { pkgs: 'clang-5.0', cc: clang-5.0, cxx: clang++-5.0, stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
+          { pkgs: 'clang-4.0', cc: clang-4.0, cxx: clang++-4.0, stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.9', cc: clang-3.9, cxx: clang++-3.9, stdc11: 'yes',  x32: 'yes', os: ubuntu-18.04,  },
 
           # clang, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
-          { pkgs: 'clang-3.8', cc: clang-3.8, cxx: clang++-3.8, os: ubuntu-16.04,  },
-          { pkgs: 'clang-3.7', cc: clang-3.7, cxx: clang++-3.7, os: ubuntu-16.04,  },
-          { pkgs: 'clang-3.6', cc: clang-3.6, cxx: clang++-3.6, os: ubuntu-16.04,  },
-          { pkgs: 'clang-3.5', cc: clang-3.5, cxx: clang++-3.5, os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.8', cc: clang-3.8, cxx: clang++-3.8, stdc11: 'yes',  x32: 'yes', os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.7', cc: clang-3.7, cxx: clang++-3.7, stdc11: 'yes',  x32: 'no', os: ubuntu-16.04,  },  # compiler clashes for x32
+          { pkgs: 'clang-3.6', cc: clang-3.6, cxx: clang++-3.6, stdc11: 'yes',  x32: 'no', os: ubuntu-16.04,  },  # compiler clashes for x32
+          { pkgs: 'clang-3.5', cc: clang-3.5, cxx: clang++-3.5, stdc11: 'yes',  x32: 'no', os: ubuntu-16.04,  },  # compiler clashes for x32
         ]
 
     runs-on: ${{ matrix.os }}
@@ -93,9 +95,14 @@ jobs:
       run: |
         make V=1 clean all
 
-    - name: make c_standards
+    - name: make c_standards (before C11)
       run: |
-        make V=1 clean c_standards
+        make V=1 clean c_standards_before_c11
+
+    - name: make c_standards (C11)
+      run: |
+      if: ${{ matrix.stdc11 == 'yes' ) }}
+        make V=1 clean c_standards_c11
 
     - name: make c-to-c++
       run: |
@@ -117,15 +124,15 @@ jobs:
       run: |
         MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
 
-    - name: make -C tests test MOREFLAGS='-mx32'
-      run: |
-        MOREFLAGS='-mx32' make V=1 -C tests clean test
-
     - name: make clangtest (clang only)
       if: ${{ startsWith( matrix.cc , 'clang' ) }}
       run: |
         make V=1 clean clangtest
 
+    - name: make -C tests test MOREFLAGS='-mx32'
+      run: |
+        MOREFLAGS='-mx32 -Wl,--verbose' make V=1 -C tests clean test
+
     - name: make -C tests test-lz4c32
       run: |
-        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
+        MOREFLAGS='-Werror -Wl,--verbose' make V=1 -C tests clean test-lz4c32
