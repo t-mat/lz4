@@ -1,4 +1,4 @@
-This directory contains script files for [GitHub Actions](https://github.com/features/actions) which provides CI.
+This directory [GitHub Actions](https://github.com/features/actions) workflow files which provides CI.
 
 
 # Maintenance Schedule
