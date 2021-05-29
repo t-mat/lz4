@@ -1,3 +1,11 @@
+# Maintenance Schedule:
+# - GitHub Actions : "Ubuntu 16.04 LTS will be removed on September 20, 2021"
+#   https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/
+#   This CI script will remove ubuntu-16.04.
+#   It also removes test for the following compilers:
+#   - gcc : 4.4, 4.5, 4.6, 4.7
+#   - clang: 3.5, 3.6, 3.7, 3.8
+#
 # Known issues:
 # - For now, this CI script ignores exit code of `make usan`.  Because
 #   there're several issues which may take relatively long time to
@@ -54,7 +62,7 @@ jobs:
           ubuntu-latest,
           ubuntu-20.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md
           ubuntu-18.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md
-          ubuntu-16.04,   # "Ubuntu 16.04 LTS will be removed on September 20, 2021" https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/
+          ubuntu-16.04,   # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1604-README.md
         ]
     steps:
     - uses: actions/checkout@v2
@@ -71,13 +79,13 @@ jobs:
     - name: make -v
       run: echo && make -v
 
-    - name: apt-cache gcc packages
+    - name: gcc packages (apt-cache)
       run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
 
-    - name: apt-cache clang packages
+    - name: clang packages (apt-cache)
       run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
 
-    - name: apt-cache QEMU packages
+    - name: QEMU packages (apt-cache)
       run: apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort
 
     - name: git --version
@@ -94,24 +102,63 @@ jobs:
   #   make -C programs
   #   make -C tests
   #
-  ubuntu-latest-cc:
-    name: Linux x64 ${{ matrix.xcc_name }}
-    runs-on: ubuntu-latest
+  ubuntu-c-compilers:
+    name: ${{ matrix.xcc_name }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
-          { xcc_name: 'cc',         xcc_pkg: '',          xcc: cc        },
-          { xcc_name: 'gcc 10',     xcc_pkg: gcc-10,      xcc: gcc-10    },
-          { xcc_name: 'gcc 9',      xcc_pkg: gcc-9,       xcc: gcc-9     },
-          { xcc_name: 'gcc 8',      xcc_pkg: gcc-8,       xcc: gcc-8     },
-          { xcc_name: 'gcc 7',      xcc_pkg: gcc-7,       xcc: gcc-7     },
-          { xcc_name: 'clang 11',   xcc_pkg: clang-11,    xcc: clang-11  },
-          { xcc_name: 'clang 10',   xcc_pkg: clang-10,    xcc: clang-10  },
-          { xcc_name: 'clang 9',    xcc_pkg: clang-9,     xcc: clang-9   },
-          { xcc_name: 'clang 8',    xcc_pkg: clang-8,     xcc: clang-8   },
-          { xcc_name: 'clang 7',    xcc_pkg: clang-7,     xcc: clang-7   },
-          { xcc_name: 'clang 6',    xcc_pkg: clang-6.0,   xcc: clang-6.0 },
+          # xcc_name : label name.  string.
+          # xcc_pkg  : apt-get package name.
+          # xcc      : C compiler executable.
+          # os       : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+
+          # Default C compilers
+          #  We use 'ubuntu-latest' for default C compilers.
+          { xcc_name: 'cc',         xcc_pkg: '',        xcc: cc,        os: ubuntu-latest, },
+          { xcc_name: 'gcc',        xcc_pkg: '',        xcc: gcc,       os: ubuntu-latest, },
+          { xcc_name: 'clang',      xcc_pkg: '',        xcc: clang,     os: ubuntu-latest, },
+
+
+          # gcc
+          { xcc_name: 'gcc 11',     xcc_pkg: gcc-11,    xcc: gcc-11,    os: ubuntu-20.04,  },
+          { xcc_name: 'gcc 10',     xcc_pkg: gcc-10,    xcc: gcc-10,    os: ubuntu-20.04,  },
+          { xcc_name: 'gcc 9',      xcc_pkg: gcc-9,     xcc: gcc-9,     os: ubuntu-20.04,  },
+          { xcc_name: 'gcc 8',      xcc_pkg: gcc-8,     xcc: gcc-8,     os: ubuntu-20.04,  },
+          { xcc_name: 'gcc 7',      xcc_pkg: gcc-7,     xcc: gcc-7,     os: ubuntu-20.04,  },
+
+          # gcc, ubuntu-18.04
+          { xcc_name: 'gcc 6',      xcc_pkg: gcc-6,     xcc: gcc-6,     os: ubuntu-18.04,  },
+          { xcc_name: 'gcc 5',      xcc_pkg: gcc-5,     xcc: gcc-5,     os: ubuntu-18.04,  },
+          { xcc_name: 'gcc 4.8',    xcc_pkg: gcc-4.8,   xcc: gcc-4.8,   os: ubuntu-18.04,  },
+
+          # gcc, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
+          { xcc_name: 'gcc 4.7',    xcc_pkg: gcc-4.7,   xcc: gcc-4.7,   os: ubuntu-16.04,  },
+          { xcc_name: 'gcc 4.6',    xcc_pkg: gcc-4.6,   xcc: gcc-4.6,   os: ubuntu-16.04,  },
+          { xcc_name: 'gcc 4.5',    xcc_pkg: gcc-4.5,   xcc: gcc-4.5,   os: ubuntu-16.04,  },
+          { xcc_name: 'gcc 4.4',    xcc_pkg: gcc-4.4,   xcc: gcc-4.4,   os: ubuntu-16.04,  },
+
+
+          # clang
+          { xcc_name: 'clang 12',   xcc_pkg: clang-12,  xcc: clang-12,  os: ubuntu-20.04,  },
+          { xcc_name: 'clang 11',   xcc_pkg: clang-11,  xcc: clang-11,  os: ubuntu-20.04,  },
+          { xcc_name: 'clang 10',   xcc_pkg: clang-10,  xcc: clang-10,  os: ubuntu-20.04,  },
+          { xcc_name: 'clang 9',    xcc_pkg: clang-9,   xcc: clang-9,   os: ubuntu-20.04,  },
+          { xcc_name: 'clang 8',    xcc_pkg: clang-8,   xcc: clang-8,   os: ubuntu-20.04,  },
+          { xcc_name: 'clang 7',    xcc_pkg: clang-7,   xcc: clang-7,   os: ubuntu-20.04,  },
+          { xcc_name: 'clang 6',    xcc_pkg: clang-6.0, xcc: clang-6.0, os: ubuntu-20.04,  },
+
+          # clang, ubuntu-18.04
+          { xcc_name: 'clang 5',    xcc_pkg: clang-5.0, xcc: clang-5.0, os: ubuntu-18.04,  },
+          { xcc_name: 'clang 4',    xcc_pkg: clang-4.0, xcc: clang-4.0, os: ubuntu-18.04,  },
+          { xcc_name: 'clang 3.9',  xcc_pkg: clang-3.9, xcc: clang-3.9, os: ubuntu-18.04,  },
+
+          # clang, ubuntu-16.04 will be removed.  See "Maintenance Schedule" at the top of this file.
+          { xcc_name: 'clang 3.8',  xcc_pkg: clang-3.8, xcc: clang-3.8, os: ubuntu-16.04,  },
+          { xcc_name: 'clang 3.7',  xcc_pkg: clang-3.7, xcc: clang-3.7, os: ubuntu-16.04,  },
+          { xcc_name: 'clang 3.6',  xcc_pkg: clang-3.6, xcc: clang-3.6, os: ubuntu-16.04,  },
+          { xcc_name: 'clang 3.5',  xcc_pkg: clang-3.5, xcc: clang-3.5, os: ubuntu-16.04,  },
         ]
     env:                        # Set environment variables
       XCC: ${{ matrix.xcc }}
