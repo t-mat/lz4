@@ -40,7 +40,19 @@ See https://github.com/lz4/lz4/pull/983 for details.
 
 ## c-compilers.yml
 
-See [c-compilers.yml.md](c-compilers.yml.md).
+See also [c-compilers.yml.md](c-compilers.yml.md).
+
+gcc-4.5 isn't included to this test.  Because it seems `gcc-4.5` isn't able to install to `ubuntu-16.04` by `apt-get`.
+
+```
+$ sudo apt-get install gcc-4.5 g++-4.5 gcc-multilib
+...
+The following packages have unmet dependencies:
+ gcc-4.5 : Depends: libelfg0 (>= 0.8.12) but it is not installable
+```
+
+
+
 
 
 ## cppcheck.yml

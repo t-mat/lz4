@@ -1,16 +1,7 @@
 `c-compilers.yml` is GitHub Actions workflow definition file for testing compatibility of various C compilers.
 
-# `${{ matrix.??? }}` notation
 
-It represents structured variable in `strategy.matrix.include` array in `c-compilers.yml`.
-
-
-# gcc-4.5 on ubuntu-16.04
-
-GitHub Action's `ubuntu-16.04` VM image doesn't maintain `gcc-4.5` package properly.  (Failed to install)
-
-
-# x32
+# x32 incompatibility
 
 The following compilers crashes during `-mx32` compilation.  We set `false` to its `${{ matrix.x32 }}`.
 
