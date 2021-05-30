@@ -157,9 +157,9 @@ jobs:
     ###############################################################
 
 # Test for make build system
-name: make
-on: [push, pull_request]
-jobs:
+##name: make
+##on: [push, pull_request]
+##jobs:
   lz4-build-make:
     name: make, build-make.yml
     runs-on: ubuntu-latest
