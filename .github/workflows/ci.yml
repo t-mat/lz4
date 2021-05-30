@@ -1,3 +1,4 @@
+###############################################################
 # Test various C compilers
 #
 # Known Issue
@@ -156,10 +157,19 @@ jobs:
     #                                                             #
     ###############################################################
 
+
+###############################################################
+# Test various build systems
+#
+# Known Issue
+# - All test cases which described as 'fail' must be fixed.
+#   - clang x32, x86 asserts.
+#   - gcc-11 x32, x86 asserts.
+#
 # Test for make build system
-##name: make
-##on: [push, pull_request]
-##jobs:
+name: make
+on: [push, pull_request]
+jobs:
   lz4-build-make:
     name: make, build-make.yml
     runs-on: ubuntu-latest
