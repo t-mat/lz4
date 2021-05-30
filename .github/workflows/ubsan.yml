@@ -4,6 +4,8 @@ jobs:
   lz4-ubsan-x64:
     name: Linux x64 ubsan, ubsan.yml
     runs-on: ubuntu-latest
+    env:                        # Set environment variables
+      FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
 
@@ -11,15 +13,17 @@ jobs:
       #########################################################
       # For now, we ignore the exit code of `make usan`.
       # See "Known issues / ubsan.yml" in README.md
+      # When we'll resolve this issue, remove "|| $FIXME__LZ4_CI_IGNORE"
       #########################################################
       run: |
-        ! make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
-        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+        make V=1 clean usan MOREFLAGS='-Wcomma -Werror' || $FIXME__LZ4_CI_IGNORE
 
 
   lz4-ubsan-x86:
     name: Linux x86 ubsan, ubsan.yml
     runs-on: ubuntu-latest
+    env:                        # Set environment variables
+      FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
 
@@ -31,8 +35,29 @@ jobs:
     - name: ubsan32
       #########################################################
       # For now, we ignore the exit code of `make usan32`.
-      # See "Known issues / ubsan.yml" in README.md
+      # See "Known issues / ubsan.yml" in README.md.
+      # When we'll resolve this issue, remove "|| $FIXME__LZ4_CI_IGNORE"
       #########################################################
       run: |
-        ! CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
-        echo We ignore these errors for now.  For details, see https://github.com/lz4/lz4/pull/983
+        CC=clang make V=1 clean usan32 MOREFLAGS='-Wcomma -Werror' || $FIXME__LZ4_CI_IGNORE
+
+
+  lz4-asan-x64:
+    name: Linux x64 ASAN, ubsan.yml
+    runs-on: ubuntu-latest
+    env:                        # Set environment variables
+      FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: setup
+      run: |
+        sudo sysctl -w vm.mmap_min_addr=4096
+
+    - name: frametest
+      run: |
+        CC=clang MOREFLAGS=-fsanitize=address make V=1 -C tests clean test-frametest
+
+    - name: fuzzer
+      run: |
+        CC=clang MOREFLAGS=-fsanitize=address make V=1 -C tests clean test-fuzzer

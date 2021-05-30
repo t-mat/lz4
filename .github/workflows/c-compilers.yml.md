@@ -1,7 +1,18 @@
 `c-compilers.yml` is GitHub Actions workflow definition file for testing compatibility of various C compilers.
 
 
-# x32 incompatibility
+# Known `make c_standards` incompatibility
+
+- `gcc-4.4` [doesn't have](https://gcc.gnu.org/onlinedocs/gcc-4.4.7/gcc/C-Dialect-Options.html#C-Dialect-Options)
+  gcc compatible `-std=c90` and `-std=gnu90` compiler switch.  We set `false` to its `${{ matrix.stdc90 }}`.
+
+
+# Known `make cxxtest` incompatibility
+
+- When we run `make cxxtest` for `clang-3.9`, it shows issue about `__STRICT_ANSI__`.  We set `false` to its `${{ matrix.cxxtest }}` because all other versions of `clang` works fine.
+
+
+# Known x32 incompatibility
 
 The following compilers crashes during `-mx32` compilation.  We set `false` to its `${{ matrix.x32 }}`.
 

@@ -19,37 +19,49 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: cc --version
-      run: echo && type cc && which cc && cc --version
+      run: |
+        echo && type cc && which cc && cc --version
 
     - name: gcc --version
-      run: echo && type gcc && which gcc && gcc --version
+      run: |
+        echo && type gcc && which gcc && gcc --version
 
     - name: clang --version
-      run: echo && type clang && which clang && clang --version
+      run: |
+        echo && type clang && which clang && clang --version
 
     - name: make -v
-      run: echo && type make && which make && make -v
+      run: |
+        echo && type make && which make && make -v
 
     - name: g++ --version
-      run: echo && type g++ && which g++ && g++ --version
+      run: |
+        echo && type g++ && which g++ && g++ --version
 
     - name: git --version
-      run: echo && type git && which git && git --version
+      run: |
+        echo && type git && which git && git --version
 
     - name: gcc packages (apt-cache)
-      run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
+      run: |
+        apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort
 
     - name: lib32gcc packages for i386 (apt-cache)
-      run: apt-cache search lib32gcc | grep "^lib32gcc-" | sort
+      run: |
+        apt-cache search lib32gcc | grep "^lib32gcc-" | sort
 
     - name: libx32gcc packages for x32 (apt-cache)
-      run: apt-cache search libx32gcc | grep "^libx32gcc-" | sort
+      run: |
+        apt-cache search libx32gcc | grep "^libx32gcc-" | sort
 
     - name: gcc multilib packages (apt-cache)
-      run: apt-cache search multilib | grep "gcc-" | sort
+      run: |
+        apt-cache search multilib | grep "gcc-" | sort
 
     - name: clang packages (apt-cache)
-      run: apt-cache search clang | grep "^clang-[0-9\.]* " | sort
+      run: |
+        apt-cache search clang | grep "^clang-[0-9\.]* " | sort
 
     - name: QEMU packages (apt-cache)
-      run: apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort
+      run: |
+        apt-cache search qemu | grep "^qemu-system-.*QEMU full system" | sort

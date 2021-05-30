@@ -21,30 +21,30 @@ jobs:
           #   cxx    : C++ compiler executable for `make ctocpptest`.
           #   os     : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
           #
-          #   cxxtest : Set 'true' if it can be compiled as C++ code.  Otherwise, set 'false'.
-          #   stdc90  : Set 'true' if compiler supports C90 standard.  Otherwise, set 'false'.
           #   stdc11  : Set 'true' if compiler supports C11 standard.  Otherwise, set 'false'.
+          #   stdc90  : Set 'true' if compiler supports C90 standard.  Otherwise, set 'false'.
           #   m32     : Set 'true' if compiler supports x32.  Otherwise, set 'false'.
           #             Set 'fail' if it supports x32 but fails for now.  'fail' cases must be removed.
           #   x86     : Set 'true' if compiler supports x86 (-m32).  Otherwise, set 'false'.
           #             Set 'fail' if it supports x86 but fails for now.  'fail' cases must be removed.
+          #   cxxtest : Set 'true' if it can be compiled as C++ code.  Otherwise, set 'false'.
 
           # cc
           { pkgs: '',                                                   cc: cc,        cxx: c++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
 
           # gcc
           { pkgs: '',                                                   cc: gcc,       cxx: g++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
-          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',            cc: gcc-11,    cxx: g++-11,      stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  }, # x32: https://github.com/t-mat/lz4/runs/2701644803?check_suite_focus=true#step:17:1621
-          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',            cc: gcc-10,    cxx: g++-10,      stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  }, # 
+          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',            cc: gcc-11,    cxx: g++-11,      stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',            cc: gcc-10,    cxx: g++-10,      stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',               cc: gcc-9,     cxx: g++-9,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',         cc: gcc-8,     cxx: g++-8,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',         cc: gcc-7,     cxx: g++-7,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',         cc: gcc-6,     cxx: g++-6,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
           { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev libx32gcc-5-dev',         cc: gcc-5,     cxx: g++-5,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
           { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev libx32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
-          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev',                   cc: gcc-4.7,   cxx: g++-4.7,     stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  }, # x32: gcc-4.7 partially support x32. But seems unreliable.
-          { pkgs: 'gcc-4.6 g++-4.6 gcc-4.6-multilib',                   cc: gcc-4.6,   cxx: g++-4.6,     stdc11: 'false', stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  }, # x32: gcc-4.6 does't support x32.
-          { pkgs: 'gcc-4.4 g++-4.4 gcc-4.4-multilib',                   cc: gcc-4.4,   cxx: g++-4.4,     stdc11: 'false', stdc90: 'false', x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  }, # stdc90, x32: gcc-4.4 doesn't support them.
+          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev',                   cc: gcc-4.7,   cxx: g++-4.7,     stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.6 g++-4.6 gcc-4.6-multilib',                   cc: gcc-4.6,   cxx: g++-4.6,     stdc11: 'false', stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.4 g++-4.4 gcc-4.4-multilib',                   cc: gcc-4.4,   cxx: g++-4.4,     stdc11: 'false', stdc90: 'false', x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
 
           # clang
           { pkgs: 'lib32gcc-11-dev libx32gcc-11-dev',                   cc: clang,     cxx: clang++,     stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-latest, },
@@ -57,11 +57,11 @@ jobs:
           { pkgs: 'clang-6.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-6.0, cxx: clang++-6.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'clang-5.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-5.0, cxx: clang++-5.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-18.04,  },
           { pkgs: 'clang-4.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-4.0, cxx: clang++-4.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-18.04,  },
-          { pkgs: 'clang-3.9 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-3.9, cxx: clang++-3.9, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'false', os: ubuntu-18.04,  }, # cxxtest: clang-3.9 has issue about __STRICT_ANSI__. ignore.
+          { pkgs: 'clang-3.9 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-3.9, cxx: clang++-3.9, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'false', os: ubuntu-18.04,  },
           { pkgs: 'clang-3.8',                                          cc: clang-3.8, cxx: clang++-3.8, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
-          { pkgs: 'clang-3.7',                                          cc: clang-3.7, cxx: clang++-3.7, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  }, # x32: clang-3.7 compiler clashes for x32. ignore.
-          { pkgs: 'clang-3.6',                                          cc: clang-3.6, cxx: clang++-3.6, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  }, # x32: clang-3.6 compiler clashes for x32. ignore.
-          { pkgs: 'clang-3.5',                                          cc: clang-3.5, cxx: clang++-3.5, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  }, # x32: clang-3.5 compiler clashes for x32. ignore.
+          { pkgs: 'clang-3.7',                                          cc: clang-3.7, cxx: clang++-3.7, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.6',                                          cc: clang-3.6, cxx: clang++-3.6, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.5',                                          cc: clang-3.5, cxx: clang++-3.5, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
         ]
 
     runs-on: ${{ matrix.os }}
@@ -69,6 +69,7 @@ jobs:
       # We globally set CC and CXX to improve compatibility with .travis.yml
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
+      FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
 
@@ -139,29 +140,18 @@ jobs:
 
     ###############################################################
     #                                                             #
+    #      Remove this block when we stabilize CI tests.          #
     #                                                             #
-    #           Remove this block when we reach stable.           #
-    #                                                             #
-    #                                                             #
-    # Thhis blcok is a special case handler for during GH-Actions #
-    # integration process.                                        #
-    #                                                             #
-    # For these caes,                                             #
-    # - It indicates GREEN if test FAILS.                         #
-    # - It indicates RED if test SCCUESS.                         #
-    #   If we see RED for these tests, we must update test case.  #
 
     - name: make -C tests test MOREFLAGS='-mx32' || echo Ignore failure for now.
       if: ${{ matrix.x32 == 'fail' }}
       run: |
-        ! LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || (echo SUCCESS!! but set RED to suggest to update the test case && $(exit 1))
-        echo We ignore failure of this case for now.
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || $FIXME__LZ4_CI_IGNORE
 
     - name: make -C tests test-lz4c32 || echo Ignore failure for now.
       if: ${{ matrix.x86 == 'fail' }}
       run: |
-        ! LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || (echo SUCCESS!!  But set RED to suggest to update the test case && $(exit 1))
-        echo We ignore failure of this case for now.
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || $FIXME__LZ4_CI_IGNORE
 
     #                                                             #
     ###############################################################

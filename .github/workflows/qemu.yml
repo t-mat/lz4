@@ -48,20 +48,25 @@ jobs:
 
     - name: ARM64
       if: ${{ matrix.type == 'ARM64' }}
-      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+      run: |
+        make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 
     - name: ARM
       if: ${{ matrix.type == 'ARM' }}
-      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+      run: |
+        make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 
     - name: PPC
       if: ${{ matrix.type == 'PPC' }}
-      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+      run: |
+        make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 
     - name: PPC64LE
       if: ${{ matrix.type == 'PPC64LE' }}
-      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
+      run: |
+        make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU MOREFLAGS=-m64
 
     - name: S390X
       if: ${{ matrix.type == 'S390X' }}
-      run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
+      run: |
+        make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
