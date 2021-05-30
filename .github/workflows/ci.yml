@@ -11,29 +11,28 @@
 #   - gcc-11 x32, x86 asserts.
 #   - all clangs: x32, x86 asserts.
 #
-name: C Compilers
+name: lz4 CI
 on: [push, pull_request]
 jobs:
   lz4-c-compilers:
-    name: $CC=${{ matrix.cc }}, ${{ matrix.os }}
+    name: CC=${{ matrix.cc }}, ${{ matrix.os }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
           # You can access the following values via ${{ matrix.??? }}
           #
-          #   pkgs   : apt-get package names.  It can include multiple package names which are delimited by space.
-          #   cc     : C compiler executable.
-          #   cxx    : C++ compiler executable for `make ctocpptest`.
-          #   os     : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
-          #
+          #   pkgs    : apt-get package names.  It can include multiple package names which are delimited by space.
+          #   cc      : C compiler executable.
+          #   cxx     : C++ compiler executable for `make ctocpptest`.
           #   stdc11  : Set 'true' if compiler supports C11 standard.  Otherwise, set 'false'.
           #   stdc90  : Set 'true' if compiler supports C90 standard.  Otherwise, set 'false'.
-          #   m32     : Set 'true' if compiler supports x32.  Otherwise, set 'false'.
+          #   x32     : Set 'true' if compiler supports x32.  Otherwise, set 'false'.
           #             Set 'fail' if it supports x32 but fails for now.  'fail' cases must be removed.
           #   x86     : Set 'true' if compiler supports x86 (-m32).  Otherwise, set 'false'.
           #             Set 'fail' if it supports x86 but fails for now.  'fail' cases must be removed.
           #   cxxtest : Set 'true' if it can be compiled as C++ code.  Otherwise, set 'false'.
+          #   os      : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
 
           # cc
           { pkgs: '',                                                   cc: cc,        cxx: c++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
@@ -42,7 +41,7 @@ jobs:
           { pkgs: '',                                                   cc: gcc,       cxx: g++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
           { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',            cc: gcc-11,    cxx: g++-11,      stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  }, # x32:assert(lz4hc.c:148), x86:assert(lz4hc.c:148)
           { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',            cc: gcc-10,    cxx: g++-10,      stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
-          { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',               cc: gcc-9,     cxx: g++-9,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-9  lib32gcc-9-dev  libx32gcc-9-dev',             cc: gcc-9,     cxx: g++-9,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',         cc: gcc-8,     cxx: g++-8,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',         cc: gcc-7,     cxx: g++-7,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
           { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',         cc: gcc-6,     cxx: g++-6,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
@@ -332,7 +331,7 @@ jobs:
 
 
   lz4-ubsan-x86:
-    name: Linux x86 ubsan, ubsan.yml
+    name: Linux x86 ubsan
     runs-on: ubuntu-latest
     env:                        # Set environment variables
       FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
@@ -379,16 +378,10 @@ jobs:
 # - macOS
 #
 
-  # QEMU test for the following platforms
-  #   - ARM
-  #   - ARM64
-  #   - PPC
-  #   - PPC64LE
-  #   - S390X
-  #
+  # QEMU
   # All tests use QEMU (static) and gcc cross compiler.
   lz4-qemu-platforms:
-    name: QEMU ${{ matrix.type }}, qemu.yml
+    name: QEMU ${{ matrix.type }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix instance failed.
       matrix:
@@ -446,9 +439,10 @@ jobs:
       if: ${{ matrix.type == 'S390X' }}
       run: make V=1 platformTest CC=$XCC QEMU_SYS=$XEMU
 
+
   # macOS
   lz4-platform-macos-latest:
-    name: macOS general test, macos.yml
+    name: macOS
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -590,7 +584,7 @@ jobs:
 # Gather CI environment information.
 #
   lz4-env-info:
-    name: Linux Virtual Env Info (${{ matrix.os }}), _env-info.yml
+    name: GH-Actions Virtual Env Info (${{ matrix.os }})
     strategy:
       matrix:
         include: [
