@@ -12,7 +12,7 @@ jobs:
 
     - name: Environment info
       run: |
-        echo && which cppcheck && cppcheck --version
+        echo && type cppcheck && which cppcheck && cppcheck --version
 
     - name: cppcheck
       run: |

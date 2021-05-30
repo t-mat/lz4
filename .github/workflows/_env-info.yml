@@ -19,22 +19,22 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: cc --version
-      run: echo && which cc && cc --version
+      run: echo && type cc && which cc && cc --version
 
     - name: gcc --version
-      run: echo && which gcc && gcc --version
+      run: echo && type gcc && which gcc && gcc --version
 
     - name: clang --version
-      run: echo && which clang && clang --version
+      run: echo && type clang && which clang && clang --version
 
     - name: make -v
-      run: echo && which make && make -v
+      run: echo && type make && which make && make -v
 
     - name: g++ --version
-      run: echo && which g++ && g++ --version
+      run: echo && type g++ && which g++ && g++ --version
 
     - name: git --version
-      run: echo && which git && git --version
+      run: echo && type git && which git && git --version
 
     - name: gcc packages (apt-cache)
       run: apt-cache search gcc | grep "^gcc-[0-9\.]* " | sort

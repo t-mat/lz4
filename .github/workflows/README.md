@@ -1,27 +1,46 @@
-This directory [GitHub Actions](https://github.com/features/actions) workflow files which provides CI.
+This directory contains [GitHub Actions](https://github.com/features/actions) workflow files.
 
 
 # Maintenance Schedule
 
-`ubuntu-16.04` environment will be removed at September, 2021.  It also removes test for the following compilers:
+`ubuntu-16.04` environment will be removed at September, 2021.
+--------------------------------------------------------------
+
+It also will remove test for the following compilers:
 
 - gcc: 4.4, 4.6, 4.7
 - clang: 3.5, 3.6, 3.7, 3.8
 
-See also official announcement from GitHub : 
+See also GitHub official announcement :
 ["Ubuntu 16.04 LTS will be removed on September 20, 2021"](https://github.blog/changelog/2021-04-29-github-actions-ubuntu-16-04-lts-virtual-environment-will-be-removed-on-september-20-2021/).
+
+
+# Difference with `.travis.yml`
+
+The following tests are not included yet.
+
+- name: Compile OSS-Fuzz targets
+- name: tag build
+- name: aarch64 real-hw tests
+- name: PPC64LE real-hw tests
+- name: IBM s390x real-hw tests
 
 
 # Known issues
 
 ## ubsan.yml
 
-For now, this CI script ignores the exit code of `make usan`.
+For now, `ubsan.yml` ignores the exit code of `make usan` and `make usan32`.
 Because there're several issues which may take relatively long time to resolve.
 
 We'll fully enable it when we ensure `make usan` is ready for all commits and PRs.
 
 See https://github.com/lz4/lz4/pull/983 for details.
+
+
+## c-compilers.yml
+
+See [c-compilers.yml.md](c-compilers.yml.md).
 
 
 ## cppcheck.yml
@@ -49,14 +68,3 @@ Also sometimes it reports false positives.
 - We use `make V=1` as much as possible.
   It helps to understand what causes error.
   And prevents to overlook basic mistakes.
-
-
-# Difference with `.travis.yml`
-
-The following tests are not included yet.
-
-- name: Compile OSS-Fuzz targets
-- name: tag build
-- name: aarch64 real-hw tests
-- name: PPC64LE real-hw tests
-- name: IBM s390x real-hw tests

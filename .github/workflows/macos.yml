@@ -10,8 +10,8 @@ jobs:
 
     - name: Environment info
       run: |
-        echo && which cc && cc --version
-        echo && which make && make -v
+        echo && type cc && which cc && cc --version
+        echo && type make && which make && make -v
         echo && sysctl -a | grep machdep.cpu   # cpuinfo
 
     - name: make default

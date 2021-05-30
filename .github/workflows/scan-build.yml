@@ -12,10 +12,10 @@ jobs:
 
     - name: Environment info
       run: |
-        echo && which gcc && gcc --version
-        echo && which clang && clang --version
-        echo && which scan-build               # scan-build doesn't have any --version equivalent option
-        echo && which make && make -v
+        echo && type gcc && which gcc && gcc --version
+        echo && type clang && which clang && clang --version
+        echo && type scan-build && which scan-build               # scan-build doesn't have any --version equivalent option
+        echo && type make && which make && make -v
         echo && cat /proc/cpuinfo || echo /proc/cpuinfo is not present
 
     - name: make staticAnalyze

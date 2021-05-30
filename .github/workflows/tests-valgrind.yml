@@ -12,8 +12,8 @@ jobs:
 
     - name: Environment info
       run: |
-        echo && which gcc && gcc --version
-        echo && which valgrind && valgrind --version
+        echo && type cc && which cc && cc --version
+        echo && type valgrind && which valgrind && valgrind --version
 
     - name: valgrind
       run: |

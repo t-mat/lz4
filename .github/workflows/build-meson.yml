@@ -19,9 +19,9 @@ jobs:
 
     - name: Environment info
       run: |
-        echo && clang --version
-        echo && python --version
-        echo && meson --version
+        echo && type clang && which clang && clang --version
+        echo && type python && which python && python --version
+        echo && type meson && which meson && meson --version
 
     - name: meson
       # 'run: >' replaces all newlines in the following block with spaces

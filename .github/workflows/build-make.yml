@@ -8,6 +8,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
 
+    - name: Environment info
+      run: |
+        echo && type cc && which cc && cc --version
+        echo && type make && which make && make -v
+
     - name: make
       run: |
         make V=1
@@ -22,3 +27,5 @@ jobs:
     - name: travis-install
       run: |
         make V=1 clean travis-install
+        echo && echo Installed files
+        ( cd ~/install_test_dir; find .; )
