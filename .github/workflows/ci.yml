@@ -94,13 +94,21 @@ jobs:
     - name: make all
       run: make V=1 clean all
 
-    - name: make c_standards (C90)
-      if: ${{ matrix.stdc90 == 'true' }}
-      run: make V=1 clean c_standards_c90
+##### Enable this block after https://github.com/lz4/lz4/pull/994 will be merged.
+####    - name: make c_standards (C90)
+####      if: ${{ matrix.stdc90 == 'true' }}
+####      run: make V=1 clean c_standards_c90
+####
+####    - name: make c_standards (C11)
+####      if: ${{ matrix.stdc11 == 'true' }}
+####      run: make V=1 clean c_standards_c11
 
-    - name: make c_standards (C11)
-      if: ${{ matrix.stdc11 == 'true' }}
-      run: make V=1 clean c_standards_c11
+
+#### Remove this block after https://github.com/lz4/lz4/pull/994 will be merged.
+    - name: make c_standards
+      if: ${{ matrix.stdc90 == 'true' }}
+      run: make V=1 clean c_standards
+####
 
     - name: make c-to-c++
       run: make V=1 clean ctocpptest
