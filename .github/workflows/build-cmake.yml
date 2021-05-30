@@ -31,4 +31,4 @@ jobs:
     - uses: actions/checkout@v2 # https://github.com/actions/checkout
     - name: make cmake
       run: |
-        make VERBOSE=1 clean cmake
+        make V=1 VERBOSE=1 clean cmake
