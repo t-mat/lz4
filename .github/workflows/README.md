@@ -28,9 +28,9 @@ The following tests are not included yet.
 
 # Known issues
 
-## ubsan.yml
+## USAN, ASAN (`lz4-ubsan-x64`, `lz4-ubsan-x86`, `lz4-asan-x64`)
 
-For now, `ubsan.yml` ignores the exit code of `make usan` and `make usan32`.
+For now, `lz4-ubsan-*` ignores the exit code of `make usan` and `make usan32`.
 Because there're several issues which may take relatively long time to resolve.
 
 We'll fully enable it when we ensure `make usan` is ready for all commits and PRs.
@@ -38,27 +38,23 @@ We'll fully enable it when we ensure `make usan` is ready for all commits and PR
 See https://github.com/lz4/lz4/pull/983 for details.
 
 
-## c-compilers.yml
+## C Compilers (`lz4-c-compilers`)
 
-See also [c-compilers.yml.md](c-compilers.yml.md).
+- Our test doesn't use `gcc-4.5` due to installation issue of its package.  (`apt-get install gcc-4.5` fails on GH-Actions VM)
 
-gcc-4.5 isn't included to this test.  Because it seems `gcc-4.5` isn't able to install to `ubuntu-16.04` by `apt-get`.
+- Currently, the following 32bit executable tests fail with all versions of `clang`.
+  - `CC=clang-X CFLAGS='-O3' make V=1 -C tests clean test-lz4c32`
+  - `CC=clang-X CFLAGS='-O3 -mx32' make V=1 -C tests clean test-lz4c32`
+  - See [#991](https://github.com/lz4/lz4/issues/991) for details.
 
-```
-$ sudo apt-get install gcc-4.5 g++-4.5 gcc-multilib
-...
-The following packages have unmet dependencies:
- gcc-4.5 : Depends: libelfg0 (>= 0.8.12) but it is not installable
-```
-
-
-
+- Currently, the following 32bit executable tests fail with `gcc-11`
+  - `CC=clang-X CFLAGS='-O3' make V=1 -C tests clean test-lz4c32`
+  - `CC=clang-X CFLAGS='-O3 -mx32' make V=1 -C tests clean test-lz4c32`
 
 
 ## cppcheck.yml
 
 This test script ignores the exit code of `make cppcheck`.
-
 Because this project doesn't 100% follow their recommendation.
 Also sometimes it reports false positives.
 
@@ -73,10 +69,3 @@ Also sometimes it reports false positives.
 | OS, VM                    | Set up job                            |
 | git repo, commit hash     | Run actions/checkout@v2               |
 | gcc, tools                | Environment info                      |
-
-- To fail earlier, order of tests in the same job are roughly sorted by
-  elapsed time.
-
-- We use `make V=1` as much as possible.
-  It helps to understand what causes error.
-  And prevents to overlook basic mistakes.
