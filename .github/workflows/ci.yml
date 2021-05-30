@@ -392,7 +392,7 @@ jobs:
           #   xcc  : gcc cross C compiler executable.
           #   xemu : QEMU static emulator executable.
           #   os   : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
-  
+
           { type: ARM,      pkgs: 'qemu-system-arm   gcc-arm-linux-gnueabi',     xcc: arm-linux-gnueabi-gcc,     xemu: qemu-arm-static,     os: ubuntu-latest, },
           { type: ARM64,    pkgs: 'qemu-system-arm   gcc-aarch64-linux-gnu',     xcc: aarch64-linux-gnu-gcc,     xemu: qemu-aarch64-static, os: ubuntu-latest, },
           { type: PPC,      pkgs: 'qemu-system-ppc   gcc-powerpc-linux-gnu',     xcc: powerpc-linux-gnu-gcc,     xemu: qemu-ppc-static,     os: ubuntu-latest, },
@@ -447,7 +447,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-	    - name: Environment info
+    - name: Environment info
       run: |
         echo && type cc && which cc && cc --version
         echo && type make && which make && make -v
