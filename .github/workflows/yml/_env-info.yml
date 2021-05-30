@@ -3,6 +3,9 @@ name: CI info
 
 on: [push, pull_request]
 jobs:
+  ############################################################
+  # Gather CI environment information.
+  #
   lz4-env-info:
     name: Linux Virtual Env Info (${{ matrix.os }}), _env-info.yml
     strategy:

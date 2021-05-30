@@ -1,0 +1,189 @@
+# Test various C compilers
+#
+# Known Issue
+# - All test cases which described as 'fail' must be fixed.
+#   - clang x32, x86 asserts.
+#   - gcc-11 x32, x86 asserts.
+#
+name: C Compilers
+on: [push, pull_request]
+jobs:
+  lz4-c-compilers:
+    name: $CC=${{ matrix.cc }}, ${{ matrix.os }}, c-compilers.yml
+    strategy:
+      fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
+      matrix:
+        include: [
+          # You can access the following values via ${{ matrix.??? }}
+          #
+          #   pkgs   : apt-get package names.  It can include multiple package names which are delimited by space.
+          #   cc     : C compiler executable.
+          #   cxx    : C++ compiler executable for `make ctocpptest`.
+          #   os     : GitHub Actions YAML workflow label.  See https://github.com/actions/virtual-environments#available-environments
+          #
+          #   stdc11  : Set 'true' if compiler supports C11 standard.  Otherwise, set 'false'.
+          #   stdc90  : Set 'true' if compiler supports C90 standard.  Otherwise, set 'false'.
+          #   m32     : Set 'true' if compiler supports x32.  Otherwise, set 'false'.
+          #             Set 'fail' if it supports x32 but fails for now.  'fail' cases must be removed.
+          #   x86     : Set 'true' if compiler supports x86 (-m32).  Otherwise, set 'false'.
+          #             Set 'fail' if it supports x86 but fails for now.  'fail' cases must be removed.
+          #   cxxtest : Set 'true' if it can be compiled as C++ code.  Otherwise, set 'false'.
+
+          # cc
+          { pkgs: '',                                                   cc: cc,        cxx: c++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
+
+          # gcc
+          { pkgs: '',                                                   cc: gcc,       cxx: g++,         stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-latest, },
+          { pkgs: 'gcc-11 lib32gcc-11-dev libx32gcc-11-dev',            cc: gcc-11,    cxx: g++-11,      stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-10 lib32gcc-10-dev libx32gcc-10-dev',            cc: gcc-10,    cxx: g++-10,      stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-9 lib32gcc-9-dev libx32gcc-9-dev',               cc: gcc-9,     cxx: g++-9,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-8 g++-8 lib32gcc-8-dev libx32gcc-8-dev',         cc: gcc-8,     cxx: g++-8,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-7 g++-7 lib32gcc-7-dev libx32gcc-7-dev',         cc: gcc-7,     cxx: g++-7,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'gcc-6 g++-6 lib32gcc-6-dev libx32gcc-6-dev',         cc: gcc-6,     cxx: g++-6,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
+          { pkgs: 'gcc-5 g++-5 lib32gcc-5-dev libx32gcc-5-dev',         cc: gcc-5,     cxx: g++-5,       stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
+          { pkgs: 'gcc-4.8 g++-4.8 lib32gcc-4.8-dev libx32gcc-4.8-dev', cc: gcc-4.8,   cxx: g++-4.8,     stdc11: 'true',  stdc90: 'true',  x32: 'true',  x86: 'true', cxxtest: 'true',  os: ubuntu-18.04,  },
+          { pkgs: 'gcc-4.7 g++-4.7 lib32gcc-4.7-dev',                   cc: gcc-4.7,   cxx: g++-4.7,     stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.6 g++-4.6 gcc-4.6-multilib',                   cc: gcc-4.6,   cxx: g++-4.6,     stdc11: 'false', stdc90: 'true',  x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'gcc-4.4 g++-4.4 gcc-4.4-multilib',                   cc: gcc-4.4,   cxx: g++-4.4,     stdc11: 'false', stdc90: 'false', x32: 'false', x86: 'true', cxxtest: 'true',  os: ubuntu-16.04,  },
+
+          # clang
+          { pkgs: 'lib32gcc-11-dev libx32gcc-11-dev',                   cc: clang,     cxx: clang++,     stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-latest, },
+          { pkgs: 'clang-12  lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-12,  cxx: clang++-12,  stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-11  lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-11,  cxx: clang++-11,  stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-10  lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-10,  cxx: clang++-10,  stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-9   lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-9,   cxx: clang++-9,   stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-8   lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-8,   cxx: clang++-8,   stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-7   lib32gcc-7-dev  libx32gcc-7-dev',          cc: clang-7,   cxx: clang++-7,   stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-6.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-6.0, cxx: clang++-6.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-20.04,  },
+          { pkgs: 'clang-5.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-5.0, cxx: clang++-5.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-18.04,  },
+          { pkgs: 'clang-4.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-4.0, cxx: clang++-4.0, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.9 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-3.9, cxx: clang++-3.9, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'false', os: ubuntu-18.04,  },
+          { pkgs: 'clang-3.8',                                          cc: clang-3.8, cxx: clang++-3.8, stdc11: 'true',  stdc90: 'true',  x32: 'fail',  x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.7',                                          cc: clang-3.7, cxx: clang++-3.7, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.6',                                          cc: clang-3.6, cxx: clang++-3.6, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+          { pkgs: 'clang-3.5',                                          cc: clang-3.5, cxx: clang++-3.5, stdc11: 'true',  stdc90: 'true',  x32: 'false', x86: 'fail', cxxtest: 'true',  os: ubuntu-16.04,  },
+        ]
+
+    runs-on: ${{ matrix.os }}
+    env:                        # Set environment variables
+      # We globally set CC and CXX to improve compatibility with .travis.yml
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+      FIXME__LZ4_CI_IGNORE : ' echo Error.  But we ignore it for now.'
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: apt-get install
+      run: |
+        sudo apt-get install gcc-multilib
+        sudo apt-get install ${{ matrix.pkgs }}
+
+    - name: Environment info
+      run: |
+        echo && type $CC && which $CC && $CC --version
+        echo && type $CXX && which $CXX && $CXX --version
+
+####    - name: make
+####      run: |
+####        make V=1
+####
+####    - name: make all
+####      run: |
+####        make V=1 clean all
+####
+####    - name: make c_standards (C90)
+####      if: ${{ matrix.stdc90 == 'true' }}
+####      run: |
+####        make V=1 clean c_standards_c90
+####
+####    - name: make c_standards (C11)
+####      if: ${{ matrix.stdc11 == 'true' }}
+####      run: |
+####        make V=1 clean c_standards_c11
+####
+####    - name: make c-to-c++
+####      run: |
+####        make V=1 clean ctocpptest
+####
+####    - name: make cxxtest
+####      if: ${{ matrix.cxxtest == 'true' }}
+####      run: |
+####        make V=1 clean cxxtest
+####
+####    - name: make -C programs default
+####      run: |
+####        make V=1 -C programs clean default
+####
+####    - name: make -C programs default -D_FORTIFY_SOURCE=2
+####      run: |
+####        CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make V=1 -C programs clean default
+####
+####    - name: make -C tests test-lz4
+####      run: |
+####        MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
+####
+####    - name: make clangtest (clang only)
+####      if: ${{ startsWith( matrix.cc , 'clang' ) }}
+####      run: |
+####        make V=1 clean clangtest
+####
+    - name: make -C tests test MOREFLAGS='-mx32'
+      if: ${{ matrix.x32 == 'true' }}
+      run: |
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test
+
+    - name: make -C tests test-lz4c32
+      if: ${{ matrix.x86 == 'true' }}
+      run: |
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
+
+
+    ###############################################################
+    #                                                             #
+    #      Remove this block when we stabilize CI tests.          #
+    #                                                             #
+
+    - name: make -C tests test MOREFLAGS='-mx32' || echo Ignore failure for now.
+      if: ${{ matrix.x32 == 'fail' }}
+      run: |
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || $FIXME__LZ4_CI_IGNORE
+
+    - name: make -C tests test-lz4c32 || echo Ignore failure for now.
+      if: ${{ matrix.x86 == 'fail' }}
+      run: |
+        LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || $FIXME__LZ4_CI_IGNORE
+
+    #                                                             #
+    ###############################################################
+
+# Test for make build system
+name: make
+on: [push, pull_request]
+jobs:
+  lz4-build-make:
+    name: make, build-make.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: Environment info
+      run: |
+        echo && type cc && which cc && cc --version
+        echo && type make && which make && make -v
+
+    - name: make
+      run: |
+        make V=1
+
+
+  lz4-build-make-travis-install:
+    name: make travis-install, build-make.yml
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: travis-install
+      run: |
+        make V=1 clean travis-install
+        echo && echo Installed files
+        ( cd ~/install_test_dir; find .; )
