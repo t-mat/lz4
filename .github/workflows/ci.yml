@@ -89,52 +89,56 @@ jobs:
         echo && type $CXX && which $CXX && $CXX --version
 
     - name: make
+      if: always()
       run: make V=1
 
     - name: make all
+      if: always()
       run: make V=1 clean all
 
-##### Enable this block after https://github.com/lz4/lz4/pull/994 will be merged.
-####    - name: make c_standards (C90)
-####      if: ${{ matrix.stdc90 == 'true' }}
-####      run: make V=1 clean c_standards_c90
-####
-####    - name: make c_standards (C11)
-####      if: ${{ matrix.stdc11 == 'true' }}
-####      run: make V=1 clean c_standards_c11
+    - name: make c_standards (C90)
+      if: always()
+      if: ${{ matrix.stdc90 == 'true' }}
+      run: make V=1 clean c_standards_c90
 
-
-#### Remove this block after https://github.com/lz4/lz4/pull/994 will be merged.
-    - name: make c_standards
+    - name: make c_standards (C11)
+      if: always()
       if: ${{ matrix.stdc11 == 'true' }}
-      run: make V=1 clean c_standards
-####
+      run: make V=1 clean c_standards_c11
 
     - name: make c-to-c++
+      if: always()
       run: make V=1 clean ctocpptest
 
     - name: make cxxtest
+      if: always()
       if: ${{ matrix.cxxtest == 'true' }}
       run: make V=1 clean cxxtest
 
     - name: make -C programs default
+      if: always()
       run: make V=1 -C programs clean default
 
     - name: make -C programs default -D_FORTIFY_SOURCE=2
+      if: always()
       run: CFLAGS='-fPIC' LDFLAGS='-pie -fPIE -D_FORTIFY_SOURCE=2' make V=1 -C programs clean default
 
     - name: make -C tests test-lz4
+      if: always()
       run: MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4
 
     - name: make clangtest (clang only)
+      if: always()
       if: ${{ startsWith( matrix.cc , 'clang' ) }}
       run: make V=1 clean clangtest
 
     - name: make -C tests test MOREFLAGS='-mx32'
+      if: always()
       if: ${{ matrix.x32 == 'true' }}
       run: LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test
 
     - name: make -C tests test-lz4c32
+      if: always()
       if: ${{ matrix.x86 == 'true' }}
       run: LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32
 
@@ -145,10 +149,12 @@ jobs:
     #                                                             #
 
     - name: make -C tests test MOREFLAGS='-mx32' || echo Ignore failure for now.
+      if: always()
       if: ${{ matrix.x32 == 'fail' }}
       run: LDFLAGS='-Wl,--verbose' MOREFLAGS='-mx32' make V=1 -C tests clean test || $FIXME__LZ4_CI_IGNORE
 
     - name: make -C tests test-lz4c32 || echo Ignore failure for now.
+      if: always()
       if: ${{ matrix.x86 == 'fail' }}
       run: LDFLAGS='-Wl,--verbose' MOREFLAGS='-Werror' make V=1 -C tests clean test-lz4c32 || $FIXME__LZ4_CI_IGNORE
 
