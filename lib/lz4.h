@@ -98,9 +98,9 @@ extern "C" {
 #endif
 
 /*------   Version   ------*/
-#define LZ4_VERSION_MAJOR    1    /* for breaking interface changes  */
-#define LZ4_VERSION_MINOR    9    /* for new (non-breaking) interface capabilities */
-#define LZ4_VERSION_RELEASE  3    /* for tweaks, bug-fixes, or development */
+#define LZ4_VERSION_MAJOR    9    /* for breaking interface changes  */
+#define LZ4_VERSION_MINOR    8    /* for new (non-breaking) interface capabilities */
+#define LZ4_VERSION_RELEASE  7    /* for tweaks, bug-fixes, or development */
 
 #define LZ4_VERSION_NUMBER (LZ4_VERSION_MAJOR *100*100 + LZ4_VERSION_MINOR *100 + LZ4_VERSION_RELEASE)
 
