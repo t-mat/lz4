@@ -12,6 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: Dump event JSON
+        env:
+          EVENT_JSON_FILENAME: ${{ github.event_path }}
+        run: cat "$EVENT_JSON_FILENAME"
+
       - name: Set env
         run: |
           echo "GITHUB_REF=${GITHUB_REF}"
