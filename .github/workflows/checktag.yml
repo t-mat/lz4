@@ -22,11 +22,12 @@ jobs:
           EVENT_JSON_FILENAME: ${{ github.event_path }}
         run: cat "$EVENT_JSON_FILENAME"
 
-      - name: Tag check
+      - name: make -C tests checkTag
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo "TAG v"
-          echo "GITHUB_REF=${GITHUB_REF}"
+          echo "tag=${GITHUB_REF#refs/*/}"
+          make -C tests checkTag
+          tests/checkTag ${GITHUB_REF#refs/*/}
 
       - name: Tag check
         if: startsWith(github.ref, 'refs/tags/v[0-9]')
@@ -50,3 +51,6 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ env.RELEASE_VERSION }}
+
+tags:
+  - v*.*.*
