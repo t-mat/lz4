@@ -25,8 +25,22 @@ jobs:
       - name: Tag check
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          echo "TAG"
-          echo "GITHUB_REF=${GITHUB_REF}"
+          echo "TAG v"
+
+      - name: Tag check
+        if: startsWith(github.ref, 'refs/tags/v*')
+        run: |
+          echo "TAG v*"
+
+      - name: Tag check
+        if: startsWith(github.ref, 'refs/tags/v*.*')
+        run: |
+          echo "TAG v*.*"
+
+      - name: Tag check
+        if: startsWith(github.ref, 'refs/tags/v*.**')
+        run: |
+          echo "TAG v*.**"
 
       - name: Set env
         run: |
