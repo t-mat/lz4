@@ -3,7 +3,7 @@ name: lz4 CI
 on: [push, pull_request]
 
 jobs:
-  windows-msvc:
+  windows-msvc-simple:
     name: windows msvc
     runs-on: windows-latest
     steps:
@@ -14,3 +14,38 @@ jobs:
         pushd .\build\VS2017
         cmd.exe /c .\lz4-msbuild.bat .\lz4.sln /p:PlatformToolset=v142 /p:Platform=Win32 /p:Configuration=Release /p:WindowsTargetPlatformVersion=10
         popd
+
+
+  windows-msvc:
+    name: ${{ matrix.name }}, ${{ matrix.platform }}, ${{ matrix.configuration }}
+    strategy:
+      fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
+      matrix:
+        include: [
+          # MSVC 2019
+          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+
+          # MSVC 2017
+          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
+##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
+##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
+##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
+        ]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2 # https://github.com/actions/checkout
+
+    - name: build
+      run: pushd .\build\VS2017
+
+    - name: build
+      run: >  # > means concatenate all lines in this block into single line
+        cmd.exe /c .\lz4-msbuild.bat .\lz4.sln
+        /p:PlatformToolset=${{ matrix.PlatformToolset }}
+        /p:Platform=${{ matrix.Platform }}
+        /p:Configuration=${{ Configuration }}
+        /p:WindowsTargetPlatformVersion=${{ WindowsTargetPlatformVersion }}
