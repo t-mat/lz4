@@ -43,9 +43,9 @@ jobs:
       run: pushd .\build\VS2017
 
     - name: build
-      run: >  # > means concatenate all lines in this block into single line
+      run: >
         cmd.exe /c .\lz4-msbuild.bat .\lz4.sln
         /p:PlatformToolset=${{ matrix.PlatformToolset }}
         /p:Platform=${{ matrix.Platform }}
-        /p:Configuration=${{ Configuration }}
-        /p:WindowsTargetPlatformVersion=${{ WindowsTargetPlatformVersion }}
+        /p:Configuration=${{ matrix.Configuration }}
+        /p:WindowsTargetPlatformVersion=${{ matrix.WindowsTargetPlatformVersion }}
