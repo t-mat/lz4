@@ -24,15 +24,15 @@ jobs:
         include: [
           # MSVC 2019
           { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
-##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
-##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
-##          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
+          { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
 
           # MSVC 2017
-          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
-##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
-##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
-##          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '8', os: 'windows-2016' },
+          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2016' },
+          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'Win32', Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2016' },
+          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2016' },
+          { name: 'MSVC2017', PlatformToolset: 'v141', Platform: 'x64',   Configuration: 'Debug',   WindowsTargetPlatformVersion: '10', os: 'windows-2016' },
         ]
 
     runs-on: ${{ matrix.os }}
