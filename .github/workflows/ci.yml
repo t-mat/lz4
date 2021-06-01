@@ -12,5 +12,5 @@ jobs:
     - name: build
       run: |
         pushd .\build\VS2017
-        cmd.exe /c .lz4-msbuild.bat .lz4.sln /p:PlatformToolset=v142 /p:Platform=Win32 /p:Configuration=Release /p:WindowsTargetPlatformVersion=10
+        cmd.exe /c .\lz4-msbuild.bat .\lz4.sln /p:PlatformToolset=v142 /p:Platform=Win32 /p:Configuration=Release /p:WindowsTargetPlatformVersion=10
         popd
