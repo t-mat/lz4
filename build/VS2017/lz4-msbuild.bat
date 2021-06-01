@@ -4,10 +4,10 @@
 rem Example
 rem
 rem   Build target : VC++2019, Win32, Release, Windows 10
-rem     call lz4-msbuild.bat lz4.sln /p:PlatformToolset=v142 /p:Platform=Win32 /p:Configuration=Release /p:WindowsTargetPlatformVersion=10
+rem     cmd.exe /c lz4-msbuild.bat lz4.sln /p:PlatformToolset=v142 /p:Platform=Win32 /p:Configuration=Release /p:WindowsTargetPlatformVersion=10
 rem
 rem   Build target : VC++2017, x64, Debug, Windows 8
-rem     call lz4-msbuild.bat lz4.sln /p:PlatformToolset=v141 /p:Platform=x64 /p:Configuration=Debug
+rem     cmd.exe /c lz4-msbuild.bat lz4.sln /p:PlatformToolset=v141 /p:Platform=x64 /p:Configuration=Debug
 rem
 
 
