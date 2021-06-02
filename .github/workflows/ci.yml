@@ -3,14 +3,15 @@ name: lz4 CI
 on: [push, pull_request]
 
 jobs:
-  windows-msvc:
+  # Test for build/VS2107/lz4.sln
+  lz4-msvc-sln:
     name: ${{ matrix.name }}, ${{ matrix.platform }}, ${{ matrix.configuration }}
     strategy:
       fail-fast: false  # 'false' means Don't stop matrix workflows even if some matrix failed.
       matrix:
         include: [
-          # note: MSVC 2017 and 2019 support ARM and ARM64, but since our .vcxproj doesn't
-          # have <ProjectConfiguration> for ARM and ARM64, we can't build them so far.
+          # note: MSVC 2017 and 2019 support ARM and ARM64 platforms.  But since our .vcxproj
+          # doesn't have <ProjectConfiguration> for ARM and ARM64, we don't build them so far.
 
           # MSVC 2019
           { name: 'MSVC2019', PlatformToolset: 'v142', Platform: 'Win32', Configuration: 'Release', WindowsTargetPlatformVersion: '10', os: 'windows-2019' },
