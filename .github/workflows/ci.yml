@@ -69,7 +69,7 @@ jobs:
           { pkgs: 'clang-9   lib32gcc-10-dev libx32gcc-10-dev',         cc: clang-9,   cxx: clang++-9,   x32: 'fail', x86: 'true', cxxtest: 'true',  freestanding: 'false', os: ubuntu-20.04,  },
           { pkgs: 'clang-8   lib32gcc-10-dev libx32gcc-10-dev',         cc: clang-8,   cxx: clang++-8,   x32: 'fail', x86: 'true', cxxtest: 'true',  freestanding: 'false', os: ubuntu-20.04,  },
           { pkgs: 'clang-7   lib32gcc-7-dev  libx32gcc-7-dev',          cc: clang-7,   cxx: clang++-7,   x32: 'fail', x86: 'true', cxxtest: 'true',  freestanding: 'false', os: ubuntu-20.04,  },
-          { pkgs: 'clang-6.0 lib32gcc-11-dev libx32gcc-11-dev',         cc: clang-6.0, cxx: clang++-6.0, x32: 'fail', x86: 'true', cxxtest: 'true',  freestanding: 'false', os: ubuntu-20.04,  },
+          { pkgs: 'clang-6.0 lib32gcc-10-dev libx32gcc-10-dev',         cc: clang-6.0, cxx: clang++-6.0, x32: 'fail', x86: 'true', cxxtest: 'true',  freestanding: 'false', os: ubuntu-20.04,  },
         ]
 
     runs-on: ${{ matrix.os }}
